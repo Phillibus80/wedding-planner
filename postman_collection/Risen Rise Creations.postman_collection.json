@@ -1,0 +1,1310 @@
+{
+	"info": {
+		"_postman_id": "a5123c6a-ca3c-4e80-a834-00a724321188",
+		"name": "Risen Rise Creations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12794840"
+	},
+	"item": [
+		{
+			"name": "Pages",
+			"item": [
+				{
+					"name": "Main Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								""
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "localhost:5173",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Content",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/admin",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "localhost:5173",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contact Us",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_name\": \"Phil-Test\",\n    \"email\": \"tester@tester.com\",\n    \"client_message\": \"I need something.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/contact-us",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"contact-us"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Questionnaire Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/questionnaire/destination_wedding_questions",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"questionnaire",
+								"destination_wedding_questions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sections",
+			"item": [
+				{
+					"name": "Sections",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/sections",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"sections"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Section",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sectionName\": \"world\",\n    \"pageName\": \"hello\",\n    \"showSection\": true,\n    \"title\": \"My page My title\",\n    \"sectionContent\": \"Somethign goes here\",\n    \"permissionLevel\": \"PRIVATE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/create-section",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"create-section"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Section",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sectionName\": \"comments\",\n    \"pageName\": \"main\",\n    \"showSection\": true,\n    \"sectionContent\": \"\",\n    \"title\": \"What people are saying about The Cat Lady Pet Sitting\",\n    \"sub_title\": \"Do it\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/update-section/",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"update-section",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Section by Page Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/section/main",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"section",
+								"main"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "{{Bearer_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/users",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Turd\",\n    \"lastName\": \"Ferigison\",\n    \"userName\": \"BonoPop\",\n    \"email\": \"poop@poop.con\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/update-user/theTerminator",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"update-user",
+								"theTerminator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"current_password\": \"test\",\n    \"password\": \"poop\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/update-user-password/test",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"update-user-password",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissionLevel\": \"SUPER\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/update-user-permissions/theTerminator",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"update-user-permissions",
+								"theTerminator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Username",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "{{Bearer_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/user/BonoPop",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"BonoPop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Shadow\",\n    \"last_name\": \"Ninja\",\n    \"email\": \"comeforth@die.com\",\n    \"user_name\": \"theOne\",\n    \"password\": \"shoNuff\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/create-user",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"create-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var obj = pm.response.json();",
+									"pm.environment.set(\"Bearer_Token\", obj.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"theOne\",\n    \"password\": \"shoNuff\"\n}"
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Bearer_Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Origin",
+								"value": "{{LOCAL_UI_URL}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"theOne\"\n}"
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/logout",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Content",
+			"item": [
+				{
+					"name": "Links",
+					"item": [
+						{
+							"name": "Links by Section Name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{API_URL}}/api/links/youtube",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"links",
+										"youtube"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Links",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{API_URL}}/api/links/",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"links",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Link",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Search this\",\n    \"url\": \"https://www.google.com\",\n    \"section_name\": \"default\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/create-link",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"create-link"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Link",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 4,\n    \"title\": \"Search that\",\n    \"url\": \"https://www.google.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/update-link",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"update-link"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{Bearer_Token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Comments",
+					"item": [
+						{
+							"name": "Comments by Section Name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+										"key": "Authorization",
+										"value": "{{Bearer_Token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{API_URL}}/api/comments/banner",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"comments",
+										"banner"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Comments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{API_URL}}/api/comments/",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"comments",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Comment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"author\": \"Conan\",\n    \"comment\": \"Crush your enemies; see them driven before you; hear the lamentations of the women.\",\n    \"section_name\": \"profile\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/create-comment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"create-comment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Comment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"1\",\n    \"author\": \"Michelle P.\",\n    \"comment\": \"GG is the only thing that ever happened to me and my little Chihuahuas. They absolutely love her. I travel a lot for business and I know I can rely on her. She is dependable, loving, and gives 100% to my furry babies when I am gone. There is nothing better than being out of town knowing your pets and your home is being for. Thank you GG!\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/update-comment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"update-comment"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Images",
+					"item": [
+						{
+							"name": "Images by Section Name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{API_URL}}/api/images/banner",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"images",
+										"banner"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Images",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{API_URL}}/api/images/",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"images",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"image_name\": \"Main Profile Picture44\",\n    \"src\": \"img/page-img/GGSherman_3.jpg\",\n    \"alt\": \"A picture of GGSherman the cat lady.\",\n    \"tagline\": \"\",\n    \"section_name\": \"profile\",\n    \"priority\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/create-image",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"create-image"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"image_name\": \"banner-top\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/remove-image",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"remove-image"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all general images",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/api/get-home-images",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"get-home-images"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Questions",
+					"item": [
+						{
+							"name": "Create Question",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Origin",
+										"value": "{{LOCAL_UI_URL}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"section_name\": \"Personal Information\",\n    \"question_name\": \"some_name\",\n    \"question_text\": \"some question text\",\n    \"question_type\": \"input\",\n    \"page_name\": \"wedding_questions\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/create-question",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"create-question"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Question",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"section_name\": \"Personal\",\n    \"question_name\": \"dreamWedding\",\n    \"question_text\": \"Address\",\n    \"question_type\": \"input\",\n    \"question_required\": false,\n    \"page_name\": \"wedding_questions\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/update-question/Wedding Vision/dreamWedding/wedding_questions",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"update-question",
+										"Wedding Vision",
+										"dreamWedding",
+										"wedding_questions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Question",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Bearer_Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"question_section\": \"Personal Information\",\n    \"question_name\": \"coupleName\",\n    \"page_name\": \"wedding_questions\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/api/remove-question",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"api",
+										"remove-question"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
