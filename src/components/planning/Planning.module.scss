@@ -10,7 +10,7 @@
     transform: rotate(180deg) translate(50%, 60%) scale(.5);
     opacity: .7;
 
-    @include respond(tab-980) {
+    @include respond(desktop-1300) {
       opacity: 0;
     }
 
@@ -26,6 +26,11 @@
     scale: 50%;
     transform: translate(50%, -160%) scaleY(-1);
     opacity: .5;
+
+    @include respond(desktop-1300) {
+      scale: 20%;
+      transform: translate(200%, -80%) scaleY(-1);
+    }
 
     @include respond(tab-980) {
       opacity: 0;
@@ -47,10 +52,13 @@
     .planningItems {
       margin-top: 5rem;
       display: flex;
+      justify-content: center;
       gap: 5rem;
 
-      @include respond(tab-980) {
+      @include respond(desktop-1300) {
+        align-items: center;
         flex-direction: column;
+        min-width: 100%;
       }
 
       @include respond(phone) {
@@ -60,7 +68,7 @@
 
       &_item {
         text-align: left;
-        max-width: 23.3331rem;
+        width: 23.3331rem;
 
         &:hover .planningItems_item_image {
           transform: scale(1.2);
@@ -70,8 +78,8 @@
           margin: 1rem auto;
         }
 
-        @include respond (iphoneSE) {
-          padding:0;
+        @include respond(iphoneSE) {
+          padding: 0;
           margin: 0;
           transform: scale(.85);
         }
