@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: risen_rose_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+    networks:
+      risen-rose_net:
+        ipv4_address: 172.20.0.2
+
+  web:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./api/:/var/www/html/api
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    networks:
+      risen-rose_net:
+        ipv4_address: 172.20.0.3
+
+networks:
+  risen-rose_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  db:
+    driver: local

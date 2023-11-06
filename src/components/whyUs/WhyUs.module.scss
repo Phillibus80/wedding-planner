@@ -1,0 +1,123 @@
+@import "../../scss/main";
+
+.whyUs {
+  @include centerSection;
+  padding: 5rem 3.5rem;
+
+  @include respond(tab-980) {
+    padding: 3rem .5rem;
+  }
+
+  &_wrapper {
+    min-width: 30rem;
+    max-width: 100%;
+    padding: 0 2.5rem;
+
+    @include respond(iphoneSE) {
+      min-width: 100%;
+      padding: 0;
+    }
+
+    &_icons {
+      margin: 5.5rem 0;
+      display: grid;
+      grid-template-columns: 50% 50%;
+      row-gap: 2.5rem;
+
+      @include respond(tab-land) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      &_wrapper {
+        max-width: 75%;
+        display: flex;
+        gap: 1.5rem;
+        justify-content: flex-end;
+
+        @include respond(iphoneSE) {
+          max-width: 7rem;
+          min-width: 100%;
+        }
+
+        @include respond(tab-980) {
+          padding-left: 1rem;
+          justify-content: center;
+        }
+
+        @include respond(tab-land) {
+          justify-content: center;
+        }
+
+        .icon {
+          color: $color-white;
+          background-color: $color-secondary;
+          border-radius: 50%;
+          height: 3.5rem;
+          width: 3.5rem;
+          position: relative;
+
+          @include respond(phone) {
+            height: 2rem;
+            width: 2.5rem;
+          }
+
+          @include respond(iphoneSE) {
+            height: 1.5rem;
+            width: 1.5rem;
+          }
+
+          svg {
+            @include absCenter;
+            color: $color-white;
+
+            @include respond(phone) {
+              height: 1.25rem;
+              width: 1.25rem;
+            }
+          }
+
+          &_ring {
+            font-size: 2.25rem;
+
+            @include respond(phone) {
+              font-size: 2rem;
+            }
+          }
+        }
+
+        .icon_content {
+          display: flex;
+          flex-direction: column;
+          width: 20rem;
+
+          @include respond(iphoneSE-land) {
+            justify-content: flex-start;
+            width: 15rem;
+          }
+
+          p {
+            text-align: left;
+            color: $color-grey-dark;
+
+            @include respond(iphoneSE) {
+              font-size: .85rem;
+              max-width: 75%;
+            }
+          }
+
+          &_title {
+            font-family: Marcellus, serif;
+            font-size: 1.25rem;
+            color: $color-black !important;
+
+            @include respond(iphoneSE) {
+              text-align: left;
+              font-size: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

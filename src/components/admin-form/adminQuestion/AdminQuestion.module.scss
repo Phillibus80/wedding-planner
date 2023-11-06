@@ -1,0 +1,76 @@
+@import "../../../scss/main";
+
+.comments_wrapper {
+  border: 2px solid $color-grey-dark;
+  border-radius: .5rem;
+  margin: 0 1.5rem 1.5rem 0;
+  overflow: hidden;
+
+  &_label {
+    min-width: 100%;
+    background-color: $color-black;
+
+    & > span {
+      color: $color-white;
+      font-weight: 800;
+      padding: .5rem;
+    }
+  }
+
+  .form_questions_wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: .75rem .75rem 0;
+
+    .inner {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: .5rem;
+      gap: .75rem;
+
+      & > label {
+        font-weight: bold;
+      }
+
+      & > div[role="group"] {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .adminSection_form_input {
+        min-width: 200px;
+        border: 2px solid $color-primary;
+        border-radius: .5rem;
+        padding: .5rem;
+      }
+
+      .form_textArea {
+        min-width: 200px;
+        min-height: 150px;
+        margin: .25rem 0 .25rem;
+        border: 2px solid $color-primary;
+        border-radius: .5rem;
+        padding: .5rem;
+      }
+
+      .button_container {
+        display: flex;
+        width: 100% !important;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+
+        &_button {
+          @include cardButton($color-secondary);
+        }
+
+        &_button_remove {
+          @include cardButton($color-error);
+        }
+
+        .error_message {
+          color: red !important;
+        }
+      }
+    }
+  }
+}

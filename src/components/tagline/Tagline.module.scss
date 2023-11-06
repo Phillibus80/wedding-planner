@@ -1,0 +1,62 @@
+@import '../../scss/main';
+
+.tagline {
+  overflow: hidden;
+  position: relative;
+  min-width: 100%;
+
+  .backgroundFlourish_1 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    scale: 155%;
+    transform: scale(-1);
+    opacity: .5;
+
+    @include respond(tab-980) {
+      transform: rotate(-60deg) translateX(-2rem) scale(-.5);
+    }
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  .backgroundFlourish_2 {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 75%;
+    transform: rotate(-60deg) translateX(-30%) scale(1.75);
+
+    @include respond(tab-980) {
+      transform: rotate(-60deg) translateX(-60%) scale(1);
+    }
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  &_wrapper {
+    padding: 2.5rem 3.5rem;
+
+    &_text {
+      @include centerSection;
+      text-align: center;
+      max-width: 47.5rem !important;
+      font-family: Marcellus, serif;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 2.5rem;
+    }
+  }
+}

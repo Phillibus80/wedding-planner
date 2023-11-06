@@ -1,0 +1,29 @@
+@import "../../scss/main";
+
+.login {
+  @include centerSection;
+
+  & > h1 {
+    margin: 4.5rem 0;
+    text-align: center;
+    font-family: Marcellus, Segoe UI, sans-serif;
+  }
+
+  &_form {
+    @include formBaseStyle;
+
+    &_button_container {
+      display: flex;
+      width: 100% !important;
+      justify-content: flex-end;
+
+      &_button {
+        @include formButton;
+      }
+
+      .error_message {
+        color: red !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+@import "../../scss/main";
+
+.loader {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  position: relative;
+  animation: spin 1s linear infinite
+}
+
+.loader::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 0.3125rem solid $color-white;
+  animation: rotatingClip 2s linear infinite;
+}

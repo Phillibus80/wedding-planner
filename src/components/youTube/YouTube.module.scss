@@ -1,0 +1,14 @@
+@import '../../scss/main.scss';
+
+.youtube {
+  @include centerSection;
+  margin-bottom: 2.5rem;
+  max-width: $grid-width !important;
+  max-height: 40rem !important;
+
+  &_video {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 35rem;
+  }
+}

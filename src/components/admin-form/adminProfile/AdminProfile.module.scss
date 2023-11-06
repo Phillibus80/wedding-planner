@@ -1,0 +1,70 @@
+@import "../../../scss/main";
+
+.adminProfile {
+  @include centerSection;
+  background-color: $color-white;
+  padding: 1.5rem;
+  border-radius: .5rem .5rem 0 0;
+  height: 100%;
+  margin-top: 1.5rem;
+
+  &_form {
+    margin-bottom: 1.5rem;
+    padding: 0 0 1.5rem;
+    border: 2px solid $color-grey-dark;
+    border-radius: .5rem;
+    min-width: 100%;
+
+    h2 {
+      margin: 1rem;
+    }
+
+    &_wrap {
+      display: flex;
+
+      @include respond(iphoneSE-land) {
+        flex-direction: column !important;
+      }
+
+      .profileTitle {
+        display: flex;
+        flex-direction: column;
+        width: 96%;
+        margin: .5rem 1.5rem 1rem;
+
+        @include respond(iphoneSE-land) {
+          width: 92%;
+        }
+
+        @include respond(iphoneSE) {
+          width: 85%;
+        }
+
+        @include respond(galaxyS8) {
+          width: 85%;
+        }
+
+        label {
+          font-size: 1.25rem;
+          font-weight: 800;
+        }
+      }
+    }
+
+    &_input {
+      line-height: 1.5rem !important;
+      border-radius: .5rem !important;
+      padding: .25rem !important;
+      border: 2px solid $color-grey-dark;
+    }
+
+    &_button_container {
+      @include simpleSubmitButton;
+      padding: 2rem 2.5rem 0 0;
+
+      @include respond(phone) {
+        padding: .5rem;
+      }
+    }
+  }
+}

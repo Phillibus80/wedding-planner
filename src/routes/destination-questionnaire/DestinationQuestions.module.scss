@@ -1,0 +1,179 @@
+@import '../../scss/main';
+
+input[type="radio"] {
+  accent-color: $color-primary-dark;
+  margin-right: .25rem;
+}
+
+.outer {
+  position: relative;
+  overflow: hidden;
+
+  .backgroundFlourish_1 {
+    z-index: 1;
+    position: absolute;
+    left: -2.25rem;
+    top: 10%;
+    transform: rotate(180deg) scale(1.15);
+    opacity: .5;
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  .backgroundFlourish_2 {
+    z-index: 1;
+    position: absolute;
+    right: -1.25rem;
+    top: 30%;
+    transform: scale(1);
+    opacity: .5;
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  .backgroundFlourish_3 {
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 85%;
+    transform: scale(-1);
+    opacity: .5;
+
+    @include respond(tab-980) {
+      transform: rotate(-60deg) translateX(-2rem) scale(-.5);
+    }
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  .backgroundFlourish_4 {
+    z-index: 1;
+    position: absolute;
+    right: -2rem;
+    top: 55%;
+    opacity: 75%;
+    transform: rotate(-60deg) translateX(-30%) scale(1);
+
+    @include respond(tab-980) {
+      transform: rotate(-60deg) translateX(-60%) scale(1);
+    }
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+}
+
+.questions {
+  @include centerSection;
+  padding-top: 4.5rem;
+
+  &_blurb {
+    margin: 3rem auto 0;
+    padding: 0 3.5rem;
+  }
+
+  &_form {
+    position: relative;
+    background-color: $color-white;
+    z-index: 5;
+    margin: 3.5rem;
+    padding: 0 1.5rem 1.5rem;
+    border: 2px solid $color-primary-dark;
+    border-radius: 2rem;
+    max-width: 100%;
+
+    h2 {
+      margin-top: 2.5rem;
+      font-family: Marcellus, Segoe UI, sans-serif;
+    }
+
+    &_section {
+      padding: 1.5rem 4.5rem 4.5rem 3.5rem;
+      display: grid;
+      grid-gap: 2rem;
+      grid-template-columns: 50% 50%;
+      width: 100%;
+      max-width: 100%;
+      justify-items: start;
+
+      @include respond(tab-land) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      @include respond(phone) {
+        padding: .5rem;
+      }
+
+      &_wrapper {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        width: 100%;
+      }
+
+      label {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-right: 1rem;
+      }
+
+      &_input {
+        line-height: 1.5rem !important;
+        border-radius: .5rem !important;
+        padding: .5rem !important;
+        border: 2px solid $color-grey-dark;
+      }
+
+      &_textarea {
+        line-height: 1rem !important;
+        padding: .5rem !important;
+        border: 2px solid $color-grey-dark;
+        border-radius: .5rem !important;
+        resize: vertical;
+      }
+
+      &_select {
+        line-height: 1.5rem !important;
+        border-radius: .5rem;
+        max-width: 100%;
+        border: 2px solid $color-grey-dark;
+        padding: .5rem !important;
+      }
+    }
+
+    &_button_container {
+      @include simpleSubmitButton;
+      padding: 2rem 2.5rem 0 0;
+
+      @include respond(phone) {
+        padding: .5rem;
+      }
+    }
+  }
+}

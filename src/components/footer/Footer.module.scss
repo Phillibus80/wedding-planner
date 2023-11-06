@@ -1,0 +1,92 @@
+@import "../../scss/main";
+
+.footer {
+  position: relative;
+  min-width: 100%;
+  padding-bottom: 5rem;
+  background-color: rgba(darken($color-background-tertiary, 3%), .95);
+
+  &_wrapper {
+    @include centerSection;
+    z-index: 10;
+
+    .logo {
+      padding-top: 7.8125rem;
+
+      &_image {
+        position: relative;
+        z-index: 15;
+        max-height: 5.125rem;
+      }
+    }
+
+    .footerNav {
+      position: relative;
+      z-index: 15;
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+
+      @include respond(iphoneSE) {
+        flex-direction: column;
+      }
+
+      & > li {
+        list-style-type: none;
+        display: flex;
+        gap: 2.5rem;
+
+        & > a {
+          text-decoration: none;
+          color: $color-quadiary;
+          font-family: "Segoe UI", sans-serif;
+
+          @include respond(iphoneSE) {
+            margin: 0 auto;
+          }
+        }
+      }
+    }
+  }
+
+  .footerBackground {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    min-width: 100%;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &Flourish_1 {
+      opacity: 25%;
+      transform: rotate(180deg);
+      max-height: 31.25rem;
+
+      @include respond(iphoneSE-land) {
+        max-height: 15.625rem;
+      }
+    }
+
+    &Flourish_2 {
+      opacity: 25%;
+      max-height: 31.25rem;
+
+      @include respond(iphoneSE-land) {
+        max-height: 15.625rem;
+      }
+    }
+
+    &Flourish_3 {
+      opacity: 25%;
+      max-height: 31.25rem;
+
+      @include respond(iphoneSE-land) {
+        max-height: 15.625rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,292 @@
+@import "variables";
+
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin absCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin centerSection {
+  max-width: $grid-width !important;
+  margin: 0 auto !important;
+}
+
+@mixin primaryDarkShadow {
+  box-shadow: 0.125rem 0.125rem rgba($color-grey-dark-2, 0.25);
+}
+
+@mixin primaryDarkTextShadow {
+  text-shadow: rgba($color-primary-dark, 0.5) 0.125rem 0.125rem .75px;
+}
+
+@mixin pageHeader {
+  & > h1 {
+    text-align: center;
+    color: $color-white;
+    margin-top: 1.5rem;
+    margin-bottom: .75rem;
+    @include primaryDarkTextShadow;
+  }
+}
+
+@mixin formButton {
+  cursor: pointer;
+  padding: .25rem;
+  width: 10rem !important;
+  color: $color-white;
+  font-size: 1.5rem;
+  line-height: 2.5rem;
+  border-radius: .5rem;
+  background-color: $color-blue;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-evenly;
+  @include primaryDarkShadow;
+
+  & > span {
+    @include primaryDarkTextShadow;
+  }
+
+  .loading_spinner {
+    padding-top: .35rem;
+  }
+
+  &:disabled {
+    cursor: unset;
+    background-color: $color-grey-dark;
+    color: $color-grey-light-1;
+    border: 1px solid $color-grey-light-1;
+  }
+}
+
+@mixin cardButton($buttonColor) {
+  @include formButton;
+  cursor: pointer;
+  padding: .25rem;
+  width: 7rem !important;
+  color: $color-white;
+  font-size: 1.25rem !important;
+  line-height: 2rem !important;
+  border-radius: .5rem;
+  background-color: $buttonColor;
+
+  .loading_spinner {
+    padding-top: .25rem;
+    margin-left: .5rem;
+  }
+}
+
+@mixin formBaseStyle {
+  @include centerSection;
+  max-width: 61.25rem !important;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  background-color: $color-grey-light-1;
+  border-radius: .75rem;
+
+  .container {
+    display: flex;
+    justify-content: space-between !important;
+    margin-bottom: 1.5rem;
+
+    @include respond(tab-980) {
+      flex-direction: column;
+    }
+
+    .field_container {
+      display: flex;
+      flex-direction: column;
+      width: 49% !important;
+
+      @include respond(tab-980) {
+        width: 100% !important;
+      }
+
+      label {
+        color: $color-primary-dark;
+      }
+
+      .input_field {
+        padding-left: .75rem;
+        font-size: 1.15rem;
+        line-height: 3rem;
+        border-radius: .25rem;
+        border: .1rem solid $color-primary-dark;
+        margin-bottom: 1.25rem;
+        box-shadow: 2px 2px rgba($color-primary, 0.25);
+      }
+    }
+  }
+
+  .textarea_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1.5rem;
+
+    .textarea_field {
+      border: .1rem solid $color-primary-dark;
+      box-shadow: 2px 2px rgba($color-primary, 0.25);
+      padding: .75rem;
+      font-size: 1.15rem;
+      border-radius: .25rem;
+      margin-bottom: 1.25rem;
+      min-height: 20rem !important;
+    }
+  }
+}
+
+// MEDIA QUERY MANAGER
+/*
+0 - 600px:      Phone
+600 - 900px:    Tablet portrait
+900 - 1200px:   Tablet landscape
+[1200 - 1800] is where our normal styles apply
+1800px + :      Big desktop
+
+$breakpoint arguement choices:
+- phone
+- tab-port
+- tab-land
+- big-desktop
+
+ORDER: Base + typography > general layout + grid > page layout > components
+
+1em = 16px
+*/
+@mixin respond($breakpoint) {
+  @if $breakpoint == galaxyS8 {
+    @media only screen and (max-width: 22.5em) {
+      @content
+    }; //360
+  }
+  @if $breakpoint == iphoneSE {
+    @media only screen and (max-width: 23.45em) {
+      @content
+    }; //375
+  }
+  @if $breakpoint == iphoneSE-land {
+    @media only screen and (max-width: 41.6875em) {
+      @content
+    }; //667px
+  }
+  @if $breakpoint == phone {
+    @media only screen and (max-width: 37.5em) {
+      @content
+    }; //600px
+  }
+  @if $breakpoint == tab-800 {
+    @media only screen and (max-width: 50em) {
+      @content
+    }; //800px
+  }
+  @if $breakpoint == tab-port {
+    @media only screen and (max-width: 56.25em) {
+      @content
+    }; //900px
+  }
+  @if $breakpoint == tab-980 {
+    @media only screen and (max-width: 61.25em) {
+      @content
+    }; //980px
+  }
+  @if #breakpoint == desktop-1080 {
+    @media only screen and (max-width: 67.5em) {
+      @content
+    }; //1080px
+  }
+  @if $breakpoint == tab-land {
+    @media only screen and (max-width: 75em) {
+      @content
+    }; //1200px
+  }
+  @if $breakpoint == big-desktop {
+    @media only screen and (min-width: 112.5em) {
+      @content
+    }; //1800
+  }
+}
+
+@mixin adminPlusAddButton {
+  min-height: 100% !important;
+
+  .navigation__button {
+    background-color: $color-grey-dark;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    border: none;
+    z-index: 5 !important;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 1.5rem;
+    transition: all .2s ease-in-out;
+
+    &:hover {
+      transform: rotate(370deg);
+    }
+
+    .navigation__icon {
+      position: relative;
+      margin-top: .85rem;
+
+      &,
+      &::before,
+      &::after {
+        width: 1.25rem;
+        height: 2px;
+        background-color: $color-white;
+        display: inline-block;
+      }
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+      }
+
+      &::before {
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
+
+@mixin simpleSubmitButton {
+  margin-top: .5rem;
+  display: flex;
+  width: 100% !important;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+
+  &_button {
+    @include cardButton($color-blue);
+  }
+
+  .error_message {
+    color: red !important;
+  }
+}
+
+@mixin galleryImage {
+  div {
+    img {
+      object-fit: cover;
+      width: 100%;
+      transition: all .25s ease-in-out;
+    }
+  }
+}

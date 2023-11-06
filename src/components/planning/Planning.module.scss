@@ -1,0 +1,146 @@
+@import '../../scss/main';
+
+.planning {
+  position: relative;
+
+  .backgroundFlourish_1 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: rotate(180deg) translate(50%, 60%) scale(.5);
+    opacity: .7;
+
+    @include respond(tab-980) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  .backgroundFlourish_2 {
+    position: absolute;
+    right: 0;
+    top: 0;
+    scale: 50%;
+    transform: translate(50%, -160%) scaleY(-1);
+    opacity: .5;
+
+    @include respond(tab-980) {
+      opacity: 0;
+    }
+
+    @include respond(tab-800) {
+      opacity: 0;
+    }
+
+    @include respond(phone) {
+      opacity: 0;
+    }
+  }
+
+  &_wrapper {
+    @include centerSection;
+    padding: 2.5rem .75rem;
+
+    .planningItems {
+      margin-top: 5rem;
+      display: flex;
+      gap: 5rem;
+
+      @include respond(tab-980) {
+        flex-direction: column;
+      }
+
+      @include respond(phone) {
+        margin-top: 1.5rem;
+        gap: 2.5rem;
+      }
+
+      &_item {
+        text-align: left;
+        max-width: 23.3331rem;
+
+        &:hover .planningItems_item_image {
+          transform: scale(1.2);
+        }
+
+        @include respond(tab-980) {
+          margin: 1rem auto;
+        }
+
+        @include respond (iphoneSE) {
+          padding:0;
+          margin: 0;
+          transform: scale(.85);
+        }
+
+        &:not(:nth-child(2)) {
+          padding-top: 5.625rem;
+
+          @include respond(tab-980) {
+            margin: 1.5rem auto;
+            padding-top: 0;
+          }
+        }
+
+        &_count {
+          max-width: 25%;
+          font-family: Marcellus, serif;
+          border-bottom: 1px $color-secondary solid;
+          margin-bottom: 1rem;
+        }
+
+        &_header {
+          font-family: Marcellus, serif;
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+        }
+
+        &_text {
+          font-family: noto-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+          max-width: 60%;
+          max-height: 3.5rem;
+          margin-bottom: 2.5rem;
+          color: #999999;
+        }
+
+        .image {
+          overflow: hidden;
+          position: relative;
+          display: inline-block;
+          margin-top: 2.5rem;
+
+          .planningItems_item_image {
+            transition: transform 2.5s ease-in-out;
+            width: 23.3331rem;
+            height: 19.375rem;
+
+            &::after {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: radial-gradient(
+                              ellipse at center,
+                              rgba($color-black, 0) 0%,
+                              rgba($color-black, 0.1) 50%,
+                              rgba($color-black, 0.25) 75%,
+                              rgba($color-black, 0.27) 85%,
+                              rgba($color-black, 0.4) 100%
+              );
+            }
+
+            &_img {
+              display: block;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+    }
+  }
+}

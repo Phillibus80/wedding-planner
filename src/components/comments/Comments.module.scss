@@ -1,0 +1,54 @@
+@import "../../scss/main.scss";
+
+.comments {
+  @include centerSection;
+  min-height: 1rem;
+  color: $color-white;
+  padding: 3% 3% 10rem;
+  background-color: $color-background;
+  margin-top: 4.5rem;
+
+  &_header {
+    display: flex;
+    position: relative;
+    margin-bottom: 2rem;
+    justify-content: flex-end;
+
+    h2 {
+      color: $color-primary-dark;
+    }
+  }
+
+  &_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    @include respond(phone) {
+      flex-direction: column;
+      padding: .25rem;
+    }
+  }
+
+  &_comment {
+    white-space: normal;
+    word-break: break-all;
+    margin-top: 4.5rem;
+    width: 30%;
+    text-align: left;
+    margin-right: 1.25rem;
+    color: $color-primary-dark;
+
+    @include respond(phone) {
+      flex-direction: column;
+      text-align: left;
+      margin: 0 auto;
+      min-width: 90%;
+      max-width: 100%;
+
+      &:not(:first-child) {
+        margin-top: 3rem;
+      }
+    }
+  }
+}
