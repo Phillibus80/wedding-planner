@@ -42,15 +42,19 @@ const AdminSection = ({section}) => {
             title: values.sectionTitle,
             subTitle: values.sectionSubTitle,
             showSection: isShowing,
-            sectionContent: values.sectionTextContent || section.content.textContent || '',
+            sectionContent: values.sectionTextContent || section.content.textContent || ''
         });
     };
-    const handleToggleSwitch = async (sectionName, toggleValue) => {
+    const handleToggleSwitch = async (
+        {sectionName, pageName, title, subTitle, content},
+        toggleValue) => {
         await updateSection({
-            sectionName: section.sectionName,
-            pageName: section.pageName,
+            sectionName: sectionName,
+            pageName: pageName,
+            title: title,
+            subTitle: subTitle,
             showSection: toggleValue,
-            sectionContent: section.content.textContent || '',
+            sectionContent: content?.textContent || ''
         });
 
         if (isSuccess) {
@@ -97,7 +101,7 @@ const AdminSection = ({section}) => {
                         <div className={styles.toggleSwitch}>
                             <ToggleSwitch
                                 labelText='Show Section'
-                                callbackHandler={(e) => handleToggleSwitch(section.sectionName, e.target.checked)}
+                                callbackHandler={(e) => handleToggleSwitch(section, e.target.checked)}
                                 isShowingSection={section.showSection}
                             />
                         </div>
