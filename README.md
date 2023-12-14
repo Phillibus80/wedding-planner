@@ -1,6 +1,8 @@
 # A Wedding Planner Demo Site
 This is a demo site for a wedding planner workflow.  It is consisted of a React front end utilizing React Query and a CMS that is built in PHP.  For the back end, I did use PhP Flight (https://flightphp.com/) since it is very minimal.  
 
+YouTube Demo Video:  https://youtu.be/lsPaQZmQ8Lk
+
 # Application Requirements
 - Node >= v16
 - Docker >= v20
