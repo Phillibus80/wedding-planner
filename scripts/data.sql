@@ -277,7 +277,7 @@ INSERT INTO IMAGES (IMAGE_NAME, SRC, ALT, TAGLINE, SECTION_NAME, PRIORITY_NUMBER
 VALUES ('image1', '/img/page-img/image1.jpg', 'banner image', '', 'banner', 1);
 
 INSERT INTO IMAGES (IMAGE_NAME, SRC, ALT, TAGLINE, SECTION_NAME)
-VALUES ('profile', '/img/page-img/riseRose1.jpg', 'picture of Allison Lozano', '', 'profile'),
+VALUES ('profile', '/img/page-img/riseRose1.jpg', 'picture of Some One', '', 'profile'),
        ('gallery1', '/img/page-img/riseRose1.jpg', 'gallery image', '', 'gallery'),
        ('gallery2', '/img/page-img/riseRose2.jpg', 'gallery image', '', 'gallery'),
        ('gallery3', '/img/page-img/riseRose3.jpg', 'gallery image', '', 'gallery'),
