@@ -1,26 +1,26 @@
 <?php
-$db = Flight::db();
-$data = $db->query("SELECT * FROM IMAGES ORDER BY PRIORITY_NUMBER");
-$response = $data->fetchAll(PDO::FETCH_ASSOC);
-$getImageResponse = array();
+try {
+    $db = Flight::db();
+    $data = $db->query("SELECT * FROM IMAGES ORDER BY PRIORITY_NUMBER");
+    $response = $data->fetchAll(PDO::FETCH_ASSOC);
+    $getImageResponse = array();
 
-foreach ($response as $raw) {
-    $getImageResponse[] = array(
-        "imageName" => $raw['IMAGE_NAME'],
-        "src" => $raw['SRC'],
-        "alt" => $raw['ALT'],
-        "tagline" => $raw['TAGLINE'],
-        "priority" => $raw['PRIORITY_NUMBER']
-    );
+    foreach ($response as $raw) {
+        $getImageResponse[] = array(
+            "id" => $raw['ID'],
+            "imageName" => $raw['IMAGE_NAME'],
+            "src" => $raw['SRC'],
+            "alt" => $raw['ALT'],
+            "tagline" => $raw['TAGLINE'],
+            "priority" => $raw['PRIORITY_NUMBER']
+        );
+    }
+
+    sendResponse(200, null, [
+        'count' => count($response),
+        'data' => $getImageResponse
+    ]);
+} catch (Exception $e) {
+    sendResponse(500, 'There was an error.', ["errorMessage" => $e->getMessage()]);
 }
-
-Flight::response()->header("type", "application/json");
-Flight::response()->status(200);
-Flight::response()->write(json_encode(array(
-    'status' => 200,
-    'count' => count($response),
-    'data' => $getImageResponse
-)));
-Flight::response()->send();
 $db = null;
-die();

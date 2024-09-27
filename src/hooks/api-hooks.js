@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+
 import {
     createComment,
     createImage,
@@ -20,6 +21,7 @@ import {
     removeQuestionnaireQuestion,
     removeWhyUsItem,
     submitContactForm,
+    submitQuestionsForm,
     updateComment,
     updateImage,
     updateLink,
@@ -54,7 +56,24 @@ export const useSendEmailMutation = (setErrorsCallback, setSuccessCallback) => u
             infoMessage: data?.data?.message
         });
     }
-})
+});
+
+export const useSendQuestionsEmailMutation = (setErrorsCallback, setSuccessCallback, pageName) => useMutation({
+    mutationKey: [FETCH_KEYS.MUTATION.SEND_QUESTIONS],
+    mutationFn: (questionData) => submitQuestionsForm({...questionData, pageName}),
+    onError: (e) => {
+        setErrorsCallback({
+            hasErrors: true,
+            errorMessage: e?.response?.data?.message
+        });
+    },
+    onSuccess: (data) => {
+        setSuccessCallback({
+            hasInfo: true,
+            infoMessage: data?.data?.message
+        });
+    }
+});
 
 // Auth
 export const useLogin = setErrorCallback => useMutation(
@@ -74,7 +93,7 @@ export const useLogin = setErrorCallback => useMutation(
 export const useLogOut = setErrorCallback => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation(
         {
@@ -92,7 +111,7 @@ export const useLogOut = setErrorCallback => {
 export const useGetAdminPage = () => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
     return useQuery({
         queryKey: [FETCH_KEYS.QUERY.ADMIN],
         queryFn: () => getAdminPageContent(cachedBearerToken),
@@ -110,18 +129,13 @@ export const useGetQuestionnaireQuestions = pageName => useQuery({
 export const useUpdateQuestionnaireQuestion = (setSuccessCallback, setErrorCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_QUESTION],
-        mutationFn: ({
-                         sectionName,
-                         questionName,
-                         pageName,
-                         requestBody
-                     }) => updateQuestionnaireQuestion(sectionName, questionName, pageName, requestBody, cachedBearerToken),
+        mutationFn: ({requestBody}) => updateQuestionnaireQuestion(requestBody, cachedBearerToken),
         onSuccess: async data => {
-            await queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]);
+            await queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]});
 
             return setSuccessCallback({
                 hasInfo: true,
@@ -129,7 +143,7 @@ export const useUpdateQuestionnaireQuestion = (setSuccessCallback, setErrorCallb
             });
         },
         onError: async e => {
-            await queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]);
+            await queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]});
 
             return setErrorCallback({
                 hasErrors: true,
@@ -142,7 +156,7 @@ export const useUpdateQuestionnaireQuestion = (setSuccessCallback, setErrorCallb
 export const useCreateQuestionnaireQuestion = (setSuccessCallback, setErrorCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.CREATE_QUESTION],
@@ -150,7 +164,7 @@ export const useCreateQuestionnaireQuestion = (setSuccessCallback, setErrorCallb
                          requestBody
                      }) => createQuestionnaireQuestion(requestBody, cachedBearerToken),
         onSuccess: async data => {
-            await queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]);
+            await queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]});
 
             return setSuccessCallback({
                 hasInfo: true,
@@ -158,7 +172,7 @@ export const useCreateQuestionnaireQuestion = (setSuccessCallback, setErrorCallb
             });
         },
         onError: async e => {
-            await queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]);
+            await queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]});
 
             return setErrorCallback({
                 hasErrors: true,
@@ -171,7 +185,7 @@ export const useCreateQuestionnaireQuestion = (setSuccessCallback, setErrorCallb
 export const useRemoveQuestionnaireQuestion = (setSuccessCallback, setErrorCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.REMOVE_QUESTION],
@@ -186,10 +200,10 @@ export const useRemoveQuestionnaireQuestion = (setSuccessCallback, setErrorCallb
                 infoMessage: data.data.message
             });
 
-            return queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]);
+            return queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]});
         },
         onError: async e => {
-            await queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]);
+            await queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_QUESTIONNAIRE_QUESTIONS]});
 
             return setErrorCallback({
                 hasErrors: true,
@@ -209,7 +223,7 @@ export const useGetUserByName = (username, jwtToken) => useQuery({
 export const useUpdateUser = (setSuccessCallback, setErrorCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_USER],
@@ -217,8 +231,9 @@ export const useUpdateUser = (setSuccessCallback, setErrorCallback) => {
                          firstName,
                          lastName,
                          userName,
-                         email
-                     }) => updateUser(firstName, lastName, userName, email, cachedBearerToken),
+                         email,
+                         newUsername = userName
+                     }) => updateUser(firstName, lastName, userName, email, newUsername, cachedBearerToken),
         onSuccess: async data => {
             setSuccessCallback({
                 hasInfo: true,
@@ -226,16 +241,16 @@ export const useUpdateUser = (setSuccessCallback, setErrorCallback) => {
             });
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ])
         },
         onError: async e => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             return setErrorCallback({
@@ -249,7 +264,7 @@ export const useUpdateUser = (setSuccessCallback, setErrorCallback) => {
 export const useUpdateUserPassword = (setSuccessCallback, setErrorCallback, useUserSuccess) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const bearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const bearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_USER_PASSWORD],
@@ -265,9 +280,9 @@ export const useUpdateUserPassword = (setSuccessCallback, setErrorCallback, useU
             });
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ])
         },
         onError: async e => {
@@ -277,9 +292,9 @@ export const useUpdateUserPassword = (setSuccessCallback, setErrorCallback, useU
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_USER_BY_USERNAME]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!useUserSuccess
@@ -289,7 +304,7 @@ export const useUpdateUserPassword = (setSuccessCallback, setErrorCallback, useU
 export const useUpdateSection = (setErrorsCallback, setSuccessCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_SECTION],
@@ -322,14 +337,14 @@ export const useUpdateSection = (setErrorsCallback, setSuccessCallback) => {
             });
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]})
             ]);
         },
         onError: async e => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             return setErrorsCallback({
@@ -346,7 +361,7 @@ export const useUpdateSection = (setErrorsCallback, setSuccessCallback) => {
 export const useUpdateComment = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_COMMENT],
@@ -362,8 +377,8 @@ export const useUpdateComment = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -373,8 +388,8 @@ export const useUpdateComment = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!cachedBearerToken
@@ -384,7 +399,7 @@ export const useUpdateComment = (setErrorsCallback, successCallback) => {
 export const useCreateComment = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.CREATE_COMMENT],
@@ -400,8 +415,8 @@ export const useCreateComment = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -411,8 +426,8 @@ export const useCreateComment = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!cachedBearerToken
@@ -422,7 +437,7 @@ export const useCreateComment = (setErrorsCallback, successCallback) => {
 export const useRemoveComment = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.REMOVE_COMMENT],
@@ -434,8 +449,8 @@ export const useRemoveComment = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -445,8 +460,8 @@ export const useRemoveComment = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!cachedBearerToken
@@ -457,7 +472,7 @@ export const useRemoveComment = (setErrorsCallback, successCallback) => {
 export const useUpdateLink = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_LINK],
@@ -472,10 +487,10 @@ export const useUpdateLink = (setErrorsCallback, successCallback) => {
                 infoMessage: data.data.message
             })
 
-            return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
-            ]);
+            // return Promise.all([
+            //     queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+            //     queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
+            // ]);
         },
         onError: async e => {
             setErrorsCallback({
@@ -484,8 +499,8 @@ export const useUpdateLink = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!cachedBearerToken
@@ -495,7 +510,7 @@ export const useUpdateLink = (setErrorsCallback, successCallback) => {
 export const useCreateLink = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.CREATE_LINK],
@@ -510,10 +525,10 @@ export const useCreateLink = (setErrorsCallback, successCallback) => {
                 infoMessage: data.data.message
             })
 
-            return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
-            ]);
+            // return Promise.all([
+            //     queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+            //     queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
+            // ]);
         },
         onError: async e => {
             setErrorsCallback({
@@ -522,8 +537,8 @@ export const useCreateLink = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!cachedBearerToken
@@ -533,7 +548,7 @@ export const useCreateLink = (setErrorsCallback, successCallback) => {
 export const useRemoveLink = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.REMOVE_LINK],
@@ -545,8 +560,8 @@ export const useRemoveLink = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -556,8 +571,8 @@ export const useRemoveLink = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         enabled: !!cachedBearerToken
@@ -573,7 +588,7 @@ export const useGetPageImages = () => useQuery({
 export const useCreateImage = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.CREATE_IMAGE],
@@ -581,13 +596,14 @@ export const useCreateImage = (setErrorsCallback, successCallback) => {
                          imageName,
                          alt,
                          tagline,
+                         imageSrc,
                          fileSrc,
                          sectionName
-                     }) => createImage(imageName, alt, tagline, fileSrc, sectionName, cachedBearerToken),
+                     }) => createImage(imageName, alt, tagline, imageSrc, fileSrc, sectionName, cachedBearerToken),
         onSuccess: async data => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             successCallback({
@@ -597,8 +613,8 @@ export const useCreateImage = (setErrorsCallback, successCallback) => {
         },
         onError: async e => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             setErrorsCallback({
@@ -612,21 +628,23 @@ export const useCreateImage = (setErrorsCallback, successCallback) => {
 export const useUpdateImage = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_IMAGE],
         mutationFn: ({
+                         id,
                          imageName,
                          src,
                          alt,
                          tagline,
                          fileSrc
-                     }) => updateImage(imageName, src, alt, tagline, fileSrc, cachedBearerToken),
+                     }) => updateImage(id, imageName, src, alt, tagline, fileSrc, cachedBearerToken),
         onSuccess: async data => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.GET_PAGE_IMAGES]}),
             ]);
 
             successCallback({
@@ -636,8 +654,8 @@ export const useUpdateImage = (setErrorsCallback, successCallback) => {
         },
         onError: async e => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             setErrorsCallback({
@@ -652,15 +670,15 @@ export const useUpdateImage = (setErrorsCallback, successCallback) => {
 export const useRemoveImage = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.REMOVE_IMAGE],
-        mutationFn: ({imageName}) => removeImage(imageName, cachedBearerToken),
+        mutationFn: ({imageId}) => removeImage(imageId, cachedBearerToken),
         onSuccess: async data => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             successCallback({
@@ -670,8 +688,8 @@ export const useRemoveImage = (setErrorsCallback, successCallback) => {
         },
         onError: async e => {
             await Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
 
             setErrorsCallback({
@@ -687,7 +705,7 @@ export const useRemoveImage = (setErrorsCallback, successCallback) => {
 export const useCreateWhyUsItem = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.CREATE_WHY_US],
@@ -712,8 +730,8 @@ export const useCreateWhyUsItem = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -723,8 +741,8 @@ export const useCreateWhyUsItem = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         }
     });
@@ -733,7 +751,7 @@ export const useCreateWhyUsItem = (setErrorsCallback, successCallback) => {
 export const useUpdateWhyUs = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_WHY_US],
@@ -760,8 +778,8 @@ export const useUpdateWhyUs = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -771,8 +789,8 @@ export const useUpdateWhyUs = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         }
     });
@@ -781,7 +799,7 @@ export const useUpdateWhyUs = (setErrorsCallback, successCallback) => {
 export const useRemoveWhyUs = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.REMOVE_WHY_US],
@@ -793,8 +811,8 @@ export const useRemoveWhyUs = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -804,8 +822,8 @@ export const useRemoveWhyUs = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         }
     });
@@ -815,7 +833,7 @@ export const useRemoveWhyUs = (setErrorsCallback, successCallback) => {
 export const useCreatePlanningItem = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.CREATE_PLANNING],
@@ -838,14 +856,14 @@ export const useCreatePlanningItem = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: e => Promise.all(
             [
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]
         )
             .then(
@@ -861,7 +879,7 @@ export const useCreatePlanningItem = (setErrorsCallback, successCallback) => {
 export const useUpdatePlanning = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.UPDATE_PLANNING],
@@ -886,8 +904,8 @@ export const useUpdatePlanning = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -897,8 +915,8 @@ export const useUpdatePlanning = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         }
     });
@@ -907,7 +925,7 @@ export const useUpdatePlanning = (setErrorsCallback, successCallback) => {
 export const useRemovePlanning = (setErrorsCallback, successCallback) => {
     const queryClient = useQueryClient();
     const queryData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
-    const cachedBearerToken = !!queryData?.data?.data?.token ? queryData.data.data.token : '';
+    const cachedBearerToken = queryData?.data?.data?.token ? queryData.data.data.token : '';
 
     return useMutation({
         mutationKey: [FETCH_KEYS.MUTATION.REMOVE_PLANNING],
@@ -919,8 +937,8 @@ export const useRemovePlanning = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         },
         onError: async e => {
@@ -930,8 +948,8 @@ export const useRemovePlanning = (setErrorsCallback, successCallback) => {
             })
 
             return Promise.all([
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.HOME_PAGE]),
-                queryClient.invalidateQueries([FETCH_KEYS.QUERY.ADMIN])
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.HOME_PAGE]}),
+                queryClient.invalidateQueries({queryKey: [FETCH_KEYS.QUERY.ADMIN]})
             ]);
         }
     });

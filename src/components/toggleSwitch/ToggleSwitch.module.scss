@@ -26,11 +26,11 @@
     vertical-align: middle;
     transition: background 0.25s;
 
-    &:before, &:after {
+    &::before, &::after {
       content: "";
     }
 
-    &:before {
+    &::before {
       display: block;
       background: linear-gradient(to bottom, $color-white 0%, #eee 100%);
       border-radius: 50%;
@@ -45,7 +45,7 @@
   }
 }
 
-.toggle:hover .toggle_switch:before {
+.toggle:hover .toggle_switch::before {
   background: linear-gradient(to bottom, $color-white 0%, $color-white 100%);
   box-shadow: 0 0 0 0.06125rem rgba($color-black, 0.5);
 }
@@ -54,6 +54,6 @@
   background: $color-blue;
 }
 
-.toggle_checkbox:checked + .toggle_switch:before {
+.toggle_checkbox:checked + .toggle_switch::before {
   left: 1.9rem;
 }

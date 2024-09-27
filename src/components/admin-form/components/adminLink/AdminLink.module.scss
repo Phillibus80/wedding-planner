@@ -1,0 +1,33 @@
+@import "../../../../scss/main";
+
+.admin_link {
+  border: 2px solid $color-grey-dark;
+  border-radius: .5rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+
+  @include respond(tab-port) {
+    margin: 0 0 1rem;
+  }
+
+  .card_header {
+    min-width: 100%;
+    background-color: $color-blue;
+    color: $color-white;
+    font-weight: 800;
+    padding: .25rem .5rem;
+  }
+
+  label {
+    font-size: 1rem;
+    margin-top: .55rem;
+  }
+
+  .form_input {
+    border: 2px solid $color-primary;
+    border-radius: .5rem;
+    padding: .5rem;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}

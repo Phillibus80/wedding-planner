@@ -49,6 +49,7 @@ CREATE TABLE SECTIONS
 DROP TABLE IF EXISTS IMAGES;
 CREATE TABLE IMAGES
 (
+    ID INT NOT NULL AUTO_INCREMENT,
     IMAGE_NAME       VARCHAR(50),
     SRC              VARCHAR(100),
     ALT              VARCHAR(100),
@@ -59,7 +60,7 @@ CREATE TABLE IMAGES
     created_on       DATETIME             DEFAULT CURRENT_TIMESTAMP,
     updated_on       DATETIME             DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (IMAGE_NAME),
+    PRIMARY KEY (ID),
     UNIQUE (SRC, IMAGE_NAME)
 );
 
@@ -274,26 +275,26 @@ VALUES ('01',
         'planning');
 
 INSERT INTO IMAGES (IMAGE_NAME, SRC, ALT, TAGLINE, SECTION_NAME, PRIORITY_NUMBER)
-VALUES ('image1', '/img/page-img/image1.jpg', 'banner image', '', 'banner', 1);
+VALUES ('image1', '/img/page-img/image1.webp', 'banner image', '', 'banner', 1);
 
 INSERT INTO IMAGES (IMAGE_NAME, SRC, ALT, TAGLINE, SECTION_NAME)
-VALUES ('profile', '/img/page-img/riseRose1.jpg', 'picture of Some One', '', 'profile'),
-       ('gallery1', '/img/page-img/riseRose1.jpg', 'gallery image', '', 'gallery'),
-       ('gallery2', '/img/page-img/riseRose2.jpg', 'gallery image', '', 'gallery'),
-       ('gallery3', '/img/page-img/riseRose3.jpg', 'gallery image', '', 'gallery'),
-       ('gallery4', '/img/page-img/riseRose4.jpg', 'gallery image', '', 'gallery'),
-       ('gallery5', '/img/page-img/riseRose5.jpg', 'gallery image', '', 'gallery'),
-       ('gallery6', '/img/page-img/riseRose6.jpg', 'gallery image', '', 'gallery'),
-       ('gallery7', '/img/page-img/riseRose7.jpg', 'gallery image', '', 'gallery'),
-       ('gallery8', '/img/page-img/riseRose8.jpg', 'gallery image', '', 'gallery'),
-       ('gallery9', '/img/page-img/riseRose9.jpg', 'gallery image', '', 'gallery'),
-       ('gallery10', '/img/page-img/riseRose10.jpg', 'gallery image', '', 'gallery'),
-       ('logo', '/img/page-img/Logo.png', 'risen rose logo', '', 'footer'),
-       ('facebook-logo', '/img/page-img/faceBookLogo.png', 'facebook logo', '', 'social-media'),
-       ('yelp-logo', '/img/page-img/yelpLogo.png', 'yelp logo', '', 'social-media'),
-       ('planning-column-1', '/img/page-img/riseRose3.jpg', 'questionnaire image', '', 'planning'),
-       ('planning-column-2', '/img/page-img/riseRose5.jpg', 'wedding planning image', '', 'planning'),
-       ('planning-column-3', '/img/page-img/riseRose7.jpg', 'international wedding image', '', 'planning');
+VALUES ('profile', '/img/page-img/riseRose1.webp', 'picture of a profile image', '', 'profile'),
+       ('gallery1', '/img/page-img/riseRose1.webp', 'gallery image', '', 'gallery'),
+       ('gallery2', '/img/page-img/riseRose2.webp', 'gallery image', '', 'gallery'),
+       ('gallery3', '/img/page-img/riseRose3.webp', 'gallery image', '', 'gallery'),
+       ('gallery4', '/img/page-img/riseRose4.webp', 'gallery image', '', 'gallery'),
+       ('gallery5', '/img/page-img/riseRose5.webp', 'gallery image', '', 'gallery'),
+       ('gallery6', '/img/page-img/riseRose6.webp', 'gallery image', '', 'gallery'),
+       ('gallery7', '/img/page-img/riseRose7.webp', 'gallery image', '', 'gallery'),
+       ('gallery8', '/img/page-img/riseRose8.webp', 'gallery image', '', 'gallery'),
+       ('gallery9', '/img/page-img/riseRose9.webp', 'gallery image', '', 'gallery'),
+       ('gallery10', '/img/page-img/riseRose10.webp', 'gallery image', '', 'gallery'),
+       ('logo', '/img/page-img/Logo.webp', 'risen rose logo', '', 'footer'),
+       ('facebook-logo', '/img/page-img/faceBookLogo.webp', 'facebook logo', '', 'social-media'),
+       ('yelp-logo', '/img/page-img/yelpLogo.webp', 'yelp logo', '', 'social-media'),
+       ('planning-column-1', '/img/page-img/riseRose3.webp', 'questionnaire image', '', 'planning'),
+       ('planning-column-2', '/img/page-img/riseRose5.webp', 'wedding planning image', '', 'planning'),
+       ('planning-column-3', '/img/page-img/riseRose7.webp', 'international wedding image', '', 'planning');
 
 INSERT INTO LINKS (TITLE, URL, SECTION_NAME)
 VALUES ('Facebook', 'https://www.facebook.com', 'social-media'),

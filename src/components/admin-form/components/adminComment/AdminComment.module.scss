@@ -1,0 +1,49 @@
+@import "../../../../scss/main";
+
+.comments_wrapper {
+  border: 2px solid $color-grey-dark;
+  border-radius: .5rem;
+  overflow: hidden;
+
+  &_label {
+    background-color: $color-secondary;
+    padding: .25rem;
+
+    & > span {
+      color: white;
+      font-weight: bold;
+    }
+  }
+
+  .form_comments_wrapper {
+    padding: .5rem .5rem 0;
+
+    @include respond(phone) {
+      padding: .25rem;
+    }
+  }
+
+  .inner {
+    padding-top: 1rem;
+    margin-bottom: .5rem;
+
+    .adminSection_form_input {
+      min-width: 100%;
+      max-width: 100%;
+      border: 2px solid $color-primary;
+      border-radius: .5rem;
+      padding: .5rem;
+      margin-bottom: .5rem;
+    }
+
+    .form_textArea {
+      min-width: 100%;
+      max-width: 100%;
+      min-height: 50px;
+      margin: .25rem 0;
+      border: 2px solid $color-primary;
+      border-radius: .5rem;
+      padding: .5rem;
+    }
+  }
+}

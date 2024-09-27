@@ -1,0 +1,29 @@
+@import "../../../../scss/main";
+
+.button_wrapper {
+  @include adminPlusAddButton;
+}
+
+.media_content {
+  border: 2px solid $color-grey-dark;
+  border-radius: .5rem;
+  background-color: red;
+  padding: 1.5rem;
+
+  &_header {
+    margin-bottom: 1.5rem !important;
+    color: $color-primary-dark;
+    font-size: 1rem;
+    font-weight: 800 !important;
+  }
+
+  .help_text {
+    font-size: .75rem;
+    color: $color-black;
+    margin: .25rem;
+
+    &_examples {
+      margin: 0 0 1.5rem 1.5rem;
+    }
+  }
+}

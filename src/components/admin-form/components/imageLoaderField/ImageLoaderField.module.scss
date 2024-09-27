@@ -1,0 +1,18 @@
+@import "../../../../scss/main";
+
+.image {
+  label {
+    padding-top: 1rem;
+  }
+
+  &_input {
+    line-height: 1.5rem !important;
+    border-radius: .5rem !important;
+    padding: .25rem !important;
+    border: 2px solid $color-grey-dark;
+  }
+
+  &_label {
+    font-size: 1rem;
+  }
+}

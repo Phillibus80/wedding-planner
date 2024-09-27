@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+*.css
+*.css.map
+
+api/backup-img/*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

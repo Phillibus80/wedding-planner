@@ -1,11 +1,13 @@
-import {apiURL} from '../../constants.js';
-import React from 'react';
 import PropTypes from 'prop-types';
+import {Col, Container, Image, Row} from "react-bootstrap";
+
+import {apiURL} from '../../constants.js';
+
 import styles from './SocialMedia.module.scss';
+
 
 const SocialMedia = ({socialMediaResponseObj}) => {
     const {
-        title: socialMediaTitle,
         content: {
             images: {
                 imageList: socialMediaImages
@@ -17,38 +19,40 @@ const SocialMedia = ({socialMediaResponseObj}) => {
     } = socialMediaResponseObj;
 
     return (
-        <div className={styles.social}
+        <Container className={styles.social}
              role="navigation"
              aria-label='Social Media Navigation.'
         >
-            <div className={styles.social_container}>
+            <Row className={styles.social_container}>
                 {
                     socialMediaLinks.map(
-                        ({title, url}) => {
+                        ({title, url}, index) => {
                             const normalizedTitle = title.toLowerCase();
                             const searchedImageObject = socialMediaImages.find(
-                                ({alt}) => alt.toLowerCase().includes(normalizedTitle)
+                                ({imageName}) => imageName.toLowerCase().includes(normalizedTitle)
                             );
                             return (
-                                <a className={styles.social_link}
-                                   key={title}
-                                   href={url}
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   aria-label={`Link to the cat lady's ${title} page.`}
-                                >
-                                    <img
-                                        className={styles.social_image}
-                                        src={`${apiURL}${searchedImageObject.src}`}
-                                        alt={`${searchedImageObject.alt}`}
-                                    />
-                                </a>
+                                <Col key={`${title}_${index}`}>
+                                    <a className={styles.social_link}
+                                       href={url}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       aria-label={`Link to the cat lady's ${title} page.`}
+                                    >
+                                        <Image
+                                            className={styles.social_image}
+                                            src={`${apiURL}${searchedImageObject?.src}`}
+                                            alt={`${searchedImageObject?.alt}`}
+                                            loading='lazy'
+                                        />
+                                    </a>
+                                </Col>
                             )
                         }
                     )
                 }
-            </div>
-        </div>
+            </Row>
+        </Container>
     );
 };
 

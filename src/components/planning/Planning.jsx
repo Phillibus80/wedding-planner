@@ -1,8 +1,11 @@
-import styles from './Planning.module.scss';
 import PropTypes from "prop-types";
-import SectionHeader from "../sectionHeader/SectionHeader.jsx";
+import {Col, Container, Image, Row} from "react-bootstrap";
 
 import {apiURL} from "../../constants.js";
+import {getPlanningImageComboArray} from "../../utils/utils.jsx";
+import SectionHeader from "../sectionHeader/SectionHeader.jsx";
+
+import styles from './Planning.module.scss';
 
 const Planning = ({responseObj}) => {
     const {
@@ -18,65 +21,46 @@ const Planning = ({responseObj}) => {
         }
     } = responseObj;
 
-    const getImageSrcByColumnIndex = columnIndex => {
-        const adjustColumnIndex = columnIndex + 1;
-        const imageColumnRef = imageList?.map(({imageName}) => imageName.slice(-1));
-        const imageIndex = imageColumnRef?.indexOf(`${adjustColumnIndex}`);
-        return `${apiURL}${imageList[imageIndex].src}`;
-    }
+    const comboArray = getPlanningImageComboArray(planningList, imageList);
 
     return (
-        <section className={styles.planning}>
-            <img src={'../../../api/img/Decor-outline.png'}
-                 alt='background image'
-                 role='presentation'
-                 aria-hidden
-                 className={styles.backgroundFlourish_1}
-            />
-            <img src={'../../../api/img/Decor-outline.png'}
-                 alt='background image'
-                 role='presentation'
-                 aria-hidden
-                 className={styles.backgroundFlourish_2}
-            />
-            <div className={styles.planning_wrapper}>
+        <Container className={styles.planning}>
+            <Row>
                 <SectionHeader
                     sectionHeader={title}
                     subTitle={subTitle}
                 />
 
-                <div className={styles.planningItems}>
+                <Row>
                     {
-                        planningList?.map(({
-                                               columnTitle,
-                                               title,
-                                               planningText
-                                           }, index) => (
-                            <div
-                                className={styles.planningItems_item}
-                                key={title}
+                        comboArray?.length > 0
+                        && comboArray.map(({planning, image}, index) => (
+                            <Col
+                                lg={{span: 4}}
+                                className={styles.item}
+                                key={`${title}_${index}`}
                             >
-                                <div className={styles.planningItems_item_count}>
-                                    {columnTitle}
+                                <div className={styles.item_count}>
+                                    {planning?.columnTitle}
                                 </div>
-                                <h4 className={styles.planningItems_item_header}>{title}</h4>
-                                <p className={styles.planningItems_item_text}>{planningText}</p>
+                                <h4 className={styles.item_header}>{title}</h4>
+                                <p className={styles.item_text}>{planning?.planningText}</p>
                                 <div className={styles.image}>
-                                    <div className={styles.planningItems_item_image}>
-                                        <img
-                                            src={`${getImageSrcByColumnIndex(index)}`}
+                                    <div className={styles.item_image}>
+                                        <Image
+                                            src={`${apiURL}${image?.src}`}
                                             alt='background image'
                                             role='presentation'
-                                            className={styles.planningItems_item_image_img}
+                                            fluid
                                         />
                                     </div>
                                 </div>
-                            </div>
+                            </Col>
                         ))
                     }
-                </div>
-            </div>
-        </section>
+                </Row>
+            </Row>
+        </Container>
     );
 };
 

@@ -1,16 +1,15 @@
 @import "../../scss/main";
 
 .admin {
-  @include centerSection;
-  @include pageHeader;
   background-color: $color-primary;
   padding: 0 2.5rem;
   overflow: hidden;
 
+  @include pageHeader;
+
   &_nav {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     align-items: center;
 
     &_option {

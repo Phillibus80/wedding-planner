@@ -1,31 +1,58 @@
 @import '../../scss/main';
+@include formikCustomFields;
 
+.error_message {
+  color: red !important;
+}
+
+// Custom Field Overrides
+.questions_form_section {
+  &_textarea {
+    min-height: 10rem;
+  }
+
+  &_input {
+    margin-bottom: 1rem;
+  }
+}
+
+// Component CSS
 .contact_us {
-  & > h1 {
-    margin: 4.5rem 0;
+  padding-bottom: 15rem;
+
+  h1 {
+    margin: 4.5rem 0 2rem;
     text-align: center;
-    font-family: Marcellus, Segoe UI, sans-serif;
+    font-family: Marcellus, "Segoe UI", sans-serif;
   }
 
   .contact_form {
-    @include formBaseStyle;
+    padding: 3.5rem;
+    background-color: $color-grey-light-1;
+    border-radius: .75rem;
 
     @include respond(phone) {
       border-radius: 0;
     }
 
-    &_button_container {
-      display: flex;
-      width: 100% !important;
-      justify-content: flex-end;
+    &_row {
+      margin-bottom: 4rem !important;
+
+      @include respond(phone) {
+        margin-bottom: 1rem !important;
+      }
+    }
+
+    .button_container {
+      margin-top: 3rem;
+
+      @include respond(phone) {
+        margin-top: 1rem !important;
+      }
 
       &_button {
         @include formButton;
       }
-    }
-
-    .error_message {
-      color: red !important;
     }
   }
 }

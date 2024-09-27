@@ -1,32 +1,20 @@
-import styles from './Login.module.scss';
 import {ErrorMessage, Field, Form, Formik} from 'formik';
-import LoadingSpinner from '../../components/loadingSpinner/LoadingSpinner.jsx';
-import React, {useEffect, useState} from 'react';
-import * as Yup from 'yup';
-import {useGetUserByName, useLogin} from '../../hooks/api-hooks.js';
+import {useContext, useEffect} from 'react';
+import {Col, Container, Row} from "react-bootstrap";
 import {useNavigate} from 'react-router-dom';
-import {createPortal} from "react-dom";
-import ErrorModal from "../../components/modals/error/ErrorModal.jsx";
-import {decodeJWT} from "../../utils/utils.jsx";
+import * as Yup from 'yup';
+
+import LoadingSpinner from '../../components/loadingSpinner/LoadingSpinner.jsx';
 import {ROUTE_CONST} from "../../constants.js";
+import {AdminSectionContext} from "../../context/adminSectionContext/AdminSectionContext.jsx";
+import {useGetUserByName, useLogin} from '../../hooks/api-hooks.js';
+import {decodeJWT} from "../../utils/utils.jsx";
+
+
+import styles from './Login.module.scss';
 
 const Login = () => {
-    const [errors, setErrors] = useState({
-        hasErrors: false,
-        errorMessage: ''
-    });
-
-    const errorModal = (
-        createPortal(<ErrorModal
-                message={errors.errorMessage}
-                onClose={() => setErrors({
-                    hasErrors: false,
-                    errorMessage: ''
-                })}
-            />,
-            document.body
-        )
-    );
+    const {setErrors} = useContext(AdminSectionContext);
 
     const initValues = {
         user_name: '',
@@ -71,32 +59,38 @@ const Login = () => {
     const submitLoginForm = async values => loginMutate(values);
 
     return (
-        <>
-            {errors.hasErrors && errorModal}
-            <div className={styles.login}>
-                <h1>
-                    Login Screen
-                </h1>
-                <Formik
-                    initialValues={initValues}
-                    onSubmit={submitLoginForm}
-                    validationSchema={loginSchema}
-                >
-                    {({isSubmitting, isValid}) => (
-                        <Form className={styles.login_form}>
-                            <div className={styles.container}>
-                                <div className={styles.field_container}>
-                                    <label
-                                        htmlFor='user_name'
-                                        id='user_name'
-                                    >
-                                        Username:
-                                    </label>
+        <Container className={styles.login}>
+            <h1>
+                Login Screen
+            </h1>
+
+            <Formik
+                initialValues={initValues}
+                onSubmit={submitLoginForm}
+                validationSchema={loginSchema}
+            >
+                {({isSubmitting, isValid}) => (
+                    <Form className={styles.login_form}>
+                        <Row className={styles.container_section}>
+                            <Col
+                                className='gap-0'
+                                sm={12}
+                                md={6}
+                            >
+                                <label
+                                    htmlFor='user_name'
+                                    id='user_name_label'
+                                >
+                                    Username:
+                                </label>
+
+                                <Row className={styles.questions_form_section}>
                                     <Field
                                         type='input'
+                                        id='user_name'
                                         name='user_name'
                                         placholder='username'
-                                        className={styles.input_field}
+                                        className={styles.questions_form_section_input}
                                         aria-labelledby='user_name'
                                     />
                                     <ErrorMessage
@@ -104,20 +98,29 @@ const Login = () => {
                                         className={styles.error_message}
                                         component='div'
                                     />
-                                </div>
+                                </Row>
+                            </Col>
 
-                                <div className={styles.field_container}>
-                                    <label
-                                        htmlFor='password'
-                                        id='password'
-                                    >
-                                        Password:
-                                    </label>
+
+                            <Col
+                                className='gap-0'
+                                sm={12}
+                                md={6}
+                            >
+                                <label
+                                    htmlFor='password'
+                                    id='password_label'
+                                >
+                                    Password:
+                                </label>
+
+                                <Row className={styles.questions_form_section}>
                                     <Field
                                         type='password'
+                                        id='password'
                                         name='password'
                                         placholder='password'
-                                        className={styles.input_field}
+                                        className={styles.questions_form_section_input}
                                         aria-labelledby='password'
                                     />
                                     <ErrorMessage
@@ -125,11 +128,12 @@ const Login = () => {
                                         className={styles.error_message}
                                         component='div'
                                     />
-                                </div>
+                                </Row>
+                            </Col>
+                        </Row>
 
-                            </div>
-
-                            <div className={styles.login_form_button_container}>
+                        <Row>
+                            <Col className='gap-1' sm={{span: 6, offset: 3}}>
                                 <button
                                     className={styles.login_form_button_container_button}
                                     type='submit'
@@ -153,12 +157,12 @@ const Login = () => {
                                         </div>
                                     }
                                 </button>
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
-            </div>
-        </>
+                            </Col>
+                        </Row>
+                    </Form>
+                )}
+            </Formik>
+        </Container>
     );
 };
 

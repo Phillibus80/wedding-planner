@@ -1,20 +1,26 @@
 <?php
 require_once './vendor/autoload.php';
-
-Flight::set('IN_DEVELOPMENT', true);
-
-if (Flight::get('IN_DEVELOPMENT')) {
-    header('Access-Control-Allow-Origin: http://localhost:5173');
-} else {
-    header('Access-Control-Allow-Origin: https://www.example.com');
-}
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+require_once './utils.php';
 
 // Constants
 Flight::set('SUPER', 'SUPER');
 Flight::set('PUBLIC', 'PUBLIC');
 Flight::set('PRIVATE', 'PRIVATE');
+Flight::set('IN_DEVELOPMENT', true);
+Flight::set('SITE_URL', 'http:://www.aiteTOSee.com');
+Flight::set('EMAIL', "a.person@aiteTOSee.com");
+Flight::set('FORWARD_EMAIL', 'aPerson@aiteTOSee.com');
+Flight::set('SMTP_PASSWORD', "");
+
+if (Flight::get('IN_DEVELOPMENT')) {
+    header('Access-Control-Allow-Origin: http://localhost:5173');
+} else {
+    header('Access-Control-Allow-Origin: ' . Flight::get('SITE_URL'));
+}
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
+handlePreFlight();
 
 // DB Connection Constants
 if (Flight::get('IN_DEVELOPMENT')) {
@@ -38,10 +44,7 @@ Flight::set('MAIN', 'main');
 Flight::set('page-image-dir', './img/page-img/');
 
 Flight::map('notFound', function () {
-    echo Flight::json(array(
-        'status' => '404',
-        'message' => 'Not Found'
-    ));
+    sendResponse(404, 'Not Found');
 });
 
 Flight::register('db', 'PDO',
@@ -68,13 +71,12 @@ Flight::route('POST /send-email', function () {
     require "routes/public/send-email.php";
 });
 
-Flight::route('GET /admin', function () {
-    require "routes/admin/admin.php";
+Flight::route('POST /send-questions', function () {
+    require "routes/public/send-questions.php";
 });
 
-Flight::route('GET /questionnaire/@questionnaire_page', function ($questionnaire_page) {
-    Flight::set('currentQuestionnaire', $questionnaire_page);
-    require 'routes/public/wedding-questionnaire.php';
+Flight::route('GET /admin', function () {
+    require "routes/admin/admin.php";
 });
 
 // Auth
@@ -235,15 +237,16 @@ Flight::route('POST /remove-link', function () {
 });
 
 // --Questionnaire pages
+Flight::route('GET /questionnaire/@questionnaire_page', function ($questionnaire_page) {
+    Flight::set('currentQuestionnaire', $questionnaire_page);
+    require 'routes/public/wedding-questionnaire.php';
+});
+
 Flight::route('POST /create-question', function () {
     require 'routes/questionnaire/createQuestion.php';
 });
 
-Flight::route('PATCH /update-question/@section_name/@question_name/@page_name',
-    function ($section_name, $question_name, $page_name) {
-    Flight::set('sectionName', $section_name);
-    Flight::set('questionName', $question_name);
-    Flight::set('pageName', $page_name);
+Flight::route('POST /update-question', function () {
     require 'routes/questionnaire/updateQuestion.php';
 });
 

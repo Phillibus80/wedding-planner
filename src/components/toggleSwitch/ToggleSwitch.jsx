@@ -1,6 +1,7 @@
-import styles from './ToggleSwitch.module.scss';
 import PropTypes from "prop-types";
 import {useState} from "react";
+
+import styles from './ToggleSwitch.module.scss';
 
 const ToggleSwitch = ({labelText, callbackHandler, isShowingSection}) => {
     const [toggleState, setToggleState] = useState(isShowingSection);
@@ -24,6 +25,7 @@ const ToggleSwitch = ({labelText, callbackHandler, isShowingSection}) => {
 ToggleSwitch.propTypes = {
     callbackHandler: PropTypes.func,
     isShowSection: PropTypes.bool,
+    isShowingSection: PropTypes.bool,
     labelText: PropTypes.string
 };
 

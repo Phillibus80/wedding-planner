@@ -38,6 +38,7 @@ export const API_ROUTE_CONST = {
     IMAGES: 'images',
     PAGE_IMAGES: 'get-home-images',
     SEND_EMAIL: 'send-email',
+    SEND_QUESTIONS: 'send-questions',
     GET_WHY_US_LIST: 'why-us',
     CREATE_WHY_US: 'create-why-us',
     UPDATE_WHY_US: 'update-why-us',
@@ -77,6 +78,7 @@ export const FETCH_KEYS = {
     },
     MUTATION: {
         SEND_EMAIL: 'sendEmail',
+        SEND_QUESTIONS: 'sendQuestions',
         LOGIN: 'login',
         LOGOUT: 'logout',
         UPDATE_SECTION: 'updateSection',
@@ -103,7 +105,7 @@ export const FETCH_KEYS = {
     }
 }
 
-export const phoneRegExp = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
+export const phoneRegExp = /^\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}$/;
 export const emailRegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const dateRegExp = /^(0[1-9]|[12][0-9]|3[01])(\/|-)(0[1-9]|1[1,2])(\/|-)(19|20)\d{2}$/;
 export const timeRegExp = /([01]?[0-9]|2[0-3]):[0-5][0-9]([AaPp][Mm])$/;

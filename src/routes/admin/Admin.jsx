@@ -1,23 +1,23 @@
-import styles from './Admin.module.scss';
-import {useGetAdminPage, useLogOut} from "../../hooks/api-hooks.js";
-import SectionList from "../../components/admin-form/sectionList/sectionList.jsx";
-import React, {useContext, useEffect, useState} from "react";
-import {API_ROUTE_CONST, FETCH_KEYS, ROUTE_CONST} from "../../constants.js";
-import {convertRouteToTitle, decodeJWT} from "../../utils/utils.jsx";
-import AdminProfile from "../../components/admin-form/adminProfile/AdminProfile.jsx";
-import {useNavigate} from "react-router-dom";
 import {useQueryClient} from "@tanstack/react-query";
-import {createPortal} from "react-dom";
-import ErrorModal from "../../components/modals/error/ErrorModal.jsx";
+import {useContext, useEffect, useState} from "react";
 import {Fade} from "react-awesome-reveal";
-import AdminQuestionList from "../../components/admin-form/adminQuestionList/AdminQuestionList.jsx";
-import InfoModal from "../../components/modals/info/InfoModal.jsx";
+import {Container} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
+
+import AdminProfile from "../../components/admin-form/components/adminProfile/AdminProfile.jsx";
+import AdminQuestionList from "../../components/admin-form/lists/adminQuestionList/AdminQuestionList.jsx";
+import SectionList from "../../components/admin-form/lists/sectionList/sectionList.jsx";
+import {API_ROUTE_CONST, FETCH_KEYS, ROUTE_CONST} from "../../constants.js";
 import {AdminSectionContext} from "../../context/adminSectionContext/AdminSectionContext.jsx";
+import {useGetAdminPage, useLogOut} from "../../hooks/api-hooks.js";
+import {convertRouteToTitle, decodeJWT} from "../../utils/utils.jsx";
+
+import styles from './Admin.module.scss';
 
 const Admin = () => {
     const [currentPage, setCurrentPage] = useState(ROUTE_CONST.MAIN);
 
-    const {errors, setErrors, info, setInfo} = useContext(AdminSectionContext);
+    const {setErrors} = useContext(AdminSectionContext);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const userData = queryClient.getQueryData([`${FETCH_KEYS.QUERY.GET_USER_BY_USERNAME}`]);
@@ -34,9 +34,7 @@ const Admin = () => {
     ];
 
     const adminContentRes = useGetAdminPage();
-    const {
-        mutateAsync: logoutMutate
-    } = useLogOut(setErrors);
+    const {mutateAsync: logoutMutate} = useLogOut(setErrors);
 
     const adminArr = adminContentRes.isSuccess
         ? adminContentRes?.data?.data
@@ -48,33 +46,20 @@ const Admin = () => {
         }
 
         setCurrentPage(pageRoute);
+    };
+
+    const adminFactory = (route = '', sectionArr = []) => {
+        switch (route) {
+            case ROUTE_CONST.ADMIN:
+                return <AdminProfile/>;
+            case weddingQuestionnaireRoute:
+                return <AdminQuestionList pageName={route}/>;
+            case destinationWeddingQuestionnaireRoute:
+                return <AdminQuestionList pageName={route}/>;
+            case ROUTE_CONST.MAIN:
+                return <SectionList sectionArray={sectionArr}/>;
+        }
     }
-
-    const errorModal = (
-        createPortal(<ErrorModal
-                message={errors?.errorMessage}
-                onClose={() => setErrors({
-                    hasErrors: false,
-                    errorMessage: ''
-                })}
-            />,
-            document.body
-        )
-    );
-
-    const infoModal = (
-        createPortal(<InfoModal
-                message={info?.infoMessage}
-                onClose={() => {
-                    setInfo({
-                        hasInfo: false,
-                        infoMessage: ''
-                    });
-                }}
-            />,
-            document.body
-        )
-    );
 
     useEffect(() => {
         if (!userData?.data?.data?.token) {
@@ -94,10 +79,7 @@ const Admin = () => {
 
     return (
         <>
-            {errors.hasErrors && errorModal}
-            {info.hasInfo && infoModal}
-
-            <div className={styles.admin}>
+            <Container className={styles.admin}>
                 <nav className={styles.admin_nav}>
                     {
                         adminTabLabels.map(page => (
@@ -113,65 +95,18 @@ const Admin = () => {
                         ))
                     }
                 </nav>
-
-                {/*Admin Profile Info*/}
                 {
-                    (adminContentRes.isLoading &&
-                        currentPage === ROUTE_CONST.ADMIN) &&
+                    adminContentRes.isLoading &&
                     <h1>Loading...</h1>
                 }
+
                 {
-                    (adminContentRes.isSuccess &&
-                        currentPage === ROUTE_CONST.ADMIN) &&
+                    adminContentRes.isSuccess &&
                     <Fade bottom distance="10%" duration={1000}>
-                        <AdminProfile/>
+                        {adminFactory(currentPage, adminArr)}
                     </Fade>
                 }
-
-                {/*Admin Wedding Questionnaire Pages*/}
-                {
-                    (adminContentRes.isLoading && currentPage === weddingQuestionnaireRoute) &&
-                    <h1>Loading...</h1>
-                }
-                {
-                    (adminContentRes.isSuccess && currentPage === weddingQuestionnaireRoute) &&
-                    <Fade bottom distance="10%" duration={1000}>
-                        <AdminQuestionList
-                            pageName={currentPage}
-                        />
-                    </Fade>
-                }
-
-                {/*Admin Destination Wedding Questionnaire Pages*/}
-                {
-                    (adminContentRes.isLoading && currentPage === destinationWeddingQuestionnaireRoute) &&
-                    <h1>Loading...</h1>
-                }
-                {
-                    (adminContentRes.isSuccess && currentPage === destinationWeddingQuestionnaireRoute) &&
-                    <Fade bottom distance="10%" duration={1000}>
-                        <AdminQuestionList
-                            pageName={currentPage}
-                        />
-                    </Fade>
-                }
-
-                {/*Main Admin Page Info*/}
-                {
-                    (adminContentRes.isLoading &&
-                        currentPage === ROUTE_CONST.MAIN) &&
-                    <h1>Loading...</h1>
-                }
-                {
-                    (adminContentRes.isSuccess &&
-                        currentPage === ROUTE_CONST.MAIN) &&
-                    <div>
-                        <SectionList
-                            sectionArray={adminArr}
-                        />
-                    </div>
-                }
-            </div>
+            </Container>
         </>
     );
 };

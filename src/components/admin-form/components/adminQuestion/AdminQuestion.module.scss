@@ -1,0 +1,32 @@
+@import "../../../../scss/main";
+
+.wrapper {
+  border: 2px solid $color-grey-dark;
+  border-radius: .5rem;
+  margin: 0 1.5rem 1.5rem 0;
+  overflow: hidden;
+
+  &_label {
+    min-width: 100%;
+    background-color: $color-black;
+
+    & > span {
+      color: $color-white;
+      font-weight: 800;
+      padding: .5rem;
+    }
+  }
+
+  .form_questions {
+    padding-top: 1rem;
+
+    label {
+      font-weight: bold;
+    }
+
+    .form_input {
+      border: 2px solid $color-primary;
+      border-radius: .5rem;
+    }
+  }
+}
