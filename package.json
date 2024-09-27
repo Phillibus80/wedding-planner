@@ -4,7 +4,7 @@
   "version": "1.2.0",
   "type": "module",
   "scripts": {
-    "prepare": "husky init",
+    "prepare": "husky",
     "dev": "vite",
     "build": "vite build",
     "eslint": "eslint src --fix",
