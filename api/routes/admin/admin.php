@@ -1,216 +1,177 @@
 <?php
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
-if (Flight::get('IN_DEVELOPMENT')) {
-    $requestHeaders = apache_request_headers();
-    $authHeader = $requestHeaders['Authorization'] ?? null;
-} else {
-    $authHeader = $_SERVER["REDIRECT_HTTP_AUTHORIZATION"] ?? null;
-}
-$token = isset($authHeader) ? str_replace('Bearer ', '', $authHeader) : null;
+$authHeader = getAuthHeader();
+$token = $authHeader ? str_replace('Bearer ', '', $authHeader) : null;
 $secret = Flight::get('secretKey');
+$requestData = Flight::request()->data;
 
-$db = Flight::db();
-
-// Not signed in or wrong permissions
 if (!isset($token)) {
-    Flight::response()->header('type', 'application/json');
-    Flight::response()->status(401);
-    Flight::response()->write(json_encode(array(
-        'status' => 401,
-        'message' => 'You are not authorized to view this content.'
-    )));
-    Flight::response()->send();
-} else {
-    try {
-        $decodedToken = JWT::decode($token, new Key(Flight::get('secretKey'), 'HS256'));
-
-        // Has Token expired
-        if (isset($decodedToken->exp) && ($decodedToken->exp > time())) {
-            if (isset($decodedToken->user->username) && isset($decodedToken->user->signedIn) && $decodedToken->user->signedIn) {
-                // Get all the sections for the page.
-                $sectionContentRes = $db->query("
-                        SELECT 
-                            SECTION_NAME, 
-                            PAGE_NAME, 
-                            SHOW_SECTION, 
-                            TITLE,
-                            SUB_TITLE,
-                            CONTENT 
-                        FROM SECTIONS
-                        WHERE PAGE_NAME = 'main'
-                        GROUP BY SECTION_NAME"
-                );
-                $contentResponse = array();
-
-                // Loop through the Sections
-                foreach ($sectionContentRes as $row) {
-
-                    // Get all the comments for the section.
-                    $commentSectionRes = $db->prepare("
-                        SELECT C.AUTHOR as author,
-                               C.COMMENT as comment,
-                               C.ID as id
-                        FROM COMMENTS C
-                        WHERE C.SECTION_NAME = ?;
-                    ");
-                    $commentSectionRes->execute([$row['SECTION_NAME']]);
-                    $commentStatementResult = $commentSectionRes->fetchAll(PDO::FETCH_ASSOC);
-                    $commentStatementCount = $commentSectionRes->rowCount();
-
-                    // Get all the links for the section.
-                    $linkSectionRes = $db->prepare("
-                        SELECT L.TITLE as title,
-                               L.URL as url,
-                               L.ID as id
-                        FROM LINKS L
-                        WHERE L.SECTION_NAME = ?;
-                  ");
-                    $linkSectionRes->execute([$row['SECTION_NAME']]);
-                    $linkStatementResult = $linkSectionRes->fetchAll(PDO::FETCH_ASSOC);
-                    $linkStatementCount = $linkSectionRes->rowCount();
-
-                    // Get all the images for the section.
-                    $imageSectionRes = $db->prepare("
-                        SELECT I.IMAGE_NAME as imageName,
-                               I.SRC as src,
-                               I.ALT as alt,
-                               I.TAGLINE as tagline,
-                               I.PRIORITY_NUMBER as priority
-                        FROM IMAGES I 
-                        WHERE I.SECTION_NAME = ?
-                        ORDER BY I.PRIORITY_NUMBER;
-  ");
-                    $imageSectionRes->execute([$row['SECTION_NAME']]);
-                    $imageStatementResult = $imageSectionRes->fetchAll(PDO::FETCH_ASSOC);
-                    $imageStatementCount = $imageSectionRes->rowCount();
-
-                    // Get all the Why Us for the section.
-                    $whyUsRes = $db->prepare("
-                        SELECT  W.ID as id,
-                                W.TITLE as title,
-                                W.WHY_TEXT as whyText,
-                                W.MUI_ICON as muiIcon,
-                                W.ICONIFY_ICON as iconifyIcon
-                        FROM WHY_US W 
-                        WHERE W.SECTION_NAME = ?;
-                    ");
-                    $whyUsRes->execute([$row['SECTION_NAME']]);
-                    $whyUsStatementResult = $whyUsRes->fetchAll(PDO::FETCH_ASSOC);
-                    $whyUsStatementCount = $whyUsRes->rowCount();
-
-                    // Build the Response
-                    switch ($row['SECTION_NAME']) {
-                        case 'why-us':
-                            $contentResponse[] = array(
-                                'sectionName' => $row['SECTION_NAME'],
-                                'pageName' => $row['PAGE_NAME'],
-                                'showSection' => $row['SHOW_SECTION'] == 1,
-                                'title' => $row['TITLE'],
-                                'subTitle' => $row['SUB_TITLE'],
-                                'content' => array(
-                                    "whyUs" => array(
-                                        "count" => $whyUsStatementCount,
-                                        "whyUsList" => $whyUsStatementResult
-                                    )
-                                )
-                            );
-                            break;
-                        case 'planning':
-                            $planningRes = $db->prepare("
-                                SELECT P.COLUMN_TITLE as columnTitle,
-                                       P.TITLE as title,
-                                       P.PLANNING_TEXT as planningText,
-                                       P.SECTION_NAME as sectionName,
-                                       P.ID as id
-                                FROM PLANNING P
-                                WHERE P.SECTION_NAME = ?;
-                            ");
-                            $planningRes->execute([$row['SECTION_NAME']]);
-                            $planningStatementResult = $planningRes->fetchAll(PDO::FETCH_ASSOC);
-                            $planningStatementCount = $planningRes->rowCount();
-
-                            $contentResponse[] = array(
-                                'sectionName' => $row['SECTION_NAME'],
-                                'pageName' => $row['PAGE_NAME'],
-                                'showSection' => $row['SHOW_SECTION'] == 1,
-                                'title' => $row['TITLE'],
-                                'subTitle' => $row['SUB_TITLE'],
-                                'content' => array(
-                                    "planning" => array(
-                                        "count" => $planningStatementCount,
-                                        "planningList" => $planningStatementResult
-                                    ),
-                                    "images" => array(
-                                        "count" => $imageStatementCount,
-                                        "imageList" => $imageStatementResult
-                                    )
-                                )
-                            );
-                            break;
-                        default:
-                            $contentResponse[] = array(
-                                'sectionName' => $row['SECTION_NAME'],
-                                'pageName' => $row['PAGE_NAME'],
-                                'showSection' => $row['SHOW_SECTION'] == 1,
-                                'title' => $row['TITLE'],
-                                'subTitle' => $row['SUB_TITLE'],
-                                'content' => array(
-                                    "textContent" => $row['CONTENT'],
-                                    "comments" => array(
-                                        "count" => $commentStatementCount,
-                                        "commentList" => $commentStatementResult
-                                    ),
-                                    "links" => array(
-                                        "count" => $linkStatementCount,
-                                        "linkList" => $linkStatementResult
-                                    ),
-                                    "images" => array(
-                                        "count" => $imageStatementCount,
-                                        "imageList" => $imageStatementResult
-                                    )
-                                )
-                            );
-                            break;
-                    }
-                }
-
-                Flight::response()->header("type", "application/json");
-                Flight::response()->status(200);
-                Flight::response()->write(json_encode($contentResponse));
-                Flight::response()->send();
-                $db = null;
-                die();
-            } else {
-                Flight::response()->header("Content-Type", "application/json");
-                Flight::response()->status(401);
-                Flight::response()->write(json_encode(array(
-                        "message" => "You are not authorized to view this content."
-                    )
-                ));
-                Flight::response()->send();
-            }
-        } else {
-            // Token has expired, send a response that the user needs to log back in
-            Flight::response()->header("Content-Type", "application/json");
-            Flight::response()->status(401);
-            Flight::response()->write(json_encode(array(
-                "message" => "Token has expired. Please log in again."
-            )));
-            Flight::response()->send();
-            die();
-        }
-    } catch (Exception $e) {
-        // JWT verification failed, return a 401 Unauthorized response
-        Flight::response()->header("Content-Type", "application/json");
-        Flight::response()->status(401);
-        Flight::response()->write(json_encode(array(
-            "message" => "You are not authorized to view this content."
-        )));
-        Flight::response()->send();
-        die();
-    }
+    unauthorizedResponse('Please sign in.');
 }
-die();
+
+$decodedToken = validateToken($token, $secret);
+
+function fetchSectionData($db)
+{
+    $stmt = $db->prepare("
+        SELECT 
+            S.SECTION_NAME, 
+            S.PAGE_NAME, 
+            S.SHOW_SECTION, 
+            S.TITLE, 
+            S.SUB_TITLE, 
+            S.CONTENT, 
+            GROUP_CONCAT(DISTINCT C.AUTHOR, ':', C.COMMENT, ':', C.ID SEPARATOR '|') as comments,
+            GROUP_CONCAT(DISTINCT L.TITLE, '^', L.URL, '^', L.ID SEPARATOR '+') as links,
+            GROUP_CONCAT(DISTINCT I.ID, ':' , I.IMAGE_NAME, ':', I.SRC, ':', I.ALT, ':', I.TAGLINE, ':', I.PRIORITY_NUMBER SEPARATOR '|') as images,
+            GROUP_CONCAT(DISTINCT W.ID, ':', W.TITLE, ':', W.WHY_TEXT, ':', W.MUI_ICON, ':', W.ICONIFY_ICON SEPARATOR '|') as why_us,
+            GROUP_CONCAT(DISTINCT P.COLUMN_TITLE, ':', P.TITLE, ':', P.PLANNING_TEXT, ':', P.ID SEPARATOR '|') as planning
+        FROM SECTIONS S
+        LEFT JOIN COMMENTS C ON S.SECTION_NAME = C.SECTION_NAME
+        LEFT JOIN LINKS L ON S.SECTION_NAME = L.SECTION_NAME
+        LEFT JOIN IMAGES I ON S.SECTION_NAME = I.SECTION_NAME
+        LEFT JOIN WHY_US W ON S.SECTION_NAME = W.SECTION_NAME
+        LEFT JOIN PLANNING P ON S.SECTION_NAME = P.SECTION_NAME
+        WHERE S.PAGE_NAME = 'main'
+        GROUP BY S.SECTION_NAME, S.PAGE_NAME, S.SHOW_SECTION, S.TITLE, S.SUB_TITLE, S.CONTENT
+        ORDER BY S.SECTION_NAME;
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+if ($decodedToken) {
+    try {
+        $db = Flight::db();
+        $sectionData = fetchSectionData($db);
+        $contentResponse = [];
+        $sections = [];
+
+        foreach ($sectionData as $row) {
+            $sectionName = $row['SECTION_NAME'];
+            if (!isset($sections[$sectionName])) {
+                $sections[$sectionName] = [
+                    'sectionName' => $row['SECTION_NAME'],
+                    'pageName' => $row['PAGE_NAME'],
+                    'showSection' => $row['SHOW_SECTION'] == 1,
+                    'title' => $row['TITLE'],
+                    'subTitle' => $row['SUB_TITLE'],
+                    'content' => [
+                        'textContent' => $row['CONTENT'],
+                        'comments' => [],
+                        'links' => [],
+                        'images' => [],
+                        'whyUs' => [],
+                        'planning' => []
+                    ]
+                ];
+            }
+
+            // Process comments
+            if (!empty($row['comments'])) {
+                $comments = explode('|', $row['comments']);
+                foreach ($comments as $comment) {
+                    list($author, $text, $id) = explode(':', $comment);
+                    $sections[$sectionName]['content']['comments'][] = [
+                        'author' => $author,
+                        'comment' => $text,
+                        'id' => $id
+                    ];
+                }
+            }
+
+            // Process links
+            if (!empty($row['links'])) {
+                $links = explode('+', $row['links']);
+                foreach ($links as $link) {
+                    list($title, $url, $id) = explode('^', $link);
+                    $sections[$sectionName]['content']['links'][] = [
+                        'title' => $title,
+                        'url' => $url,
+                        'id' => $id
+                    ];
+                }
+            }
+
+            // Process images
+            if (!empty($row['images'])) {
+                $images = explode('|', $row['images']);
+                foreach ($images as $image) {
+                    list($id, $name, $src, $alt, $tagline, $priority) = explode(':', $image);
+                    $sections[$sectionName]['content']['images'][] = [
+                        "id" => $id,
+                        'imageName' => $name,
+                        'src' => $src,
+                        'alt' => $alt,
+                        'tagline' => $tagline,
+                        'priority' => $priority
+                    ];
+                }
+            }
+
+            // Process why_us
+            if (!empty($row['why_us'])) {
+                $whyUs = explode('|', $row['why_us']);
+                foreach ($whyUs as $why) {
+                    list($id, $title, $text, $muiIcon, $iconifyIcon) = explode(':', $why);
+                    $sections[$sectionName]['content']['whyUs'][] = [
+                        'id' => $id,
+                        'title' => $title,
+                        'whyText' => $text,
+                        'muiIcon' => $muiIcon,
+                        'iconifyIcon' => $iconifyIcon
+                    ];
+                }
+            }
+
+            // Process planning
+            if (!empty($row['planning'])) {
+                $planning = explode('|', $row['planning']);
+                foreach ($planning as $plan) {
+                    list($columnTitle, $title, $text, $id) = explode(':', $plan);
+                    $sections[$sectionName]['content']['planning'][] = [
+                        'columnTitle' => $columnTitle,
+                        'title' => $title,
+                        'planningText' => $text,
+                        'id' => $id
+                    ];
+                }
+            }
+        }
+
+        foreach ($sections as $section) {
+            switch ($section['sectionName']) {
+                case 'why-us':
+                    break;
+                case 'planning':
+                    $section['content']['images'] = [
+                        'count' => count($section['content']['images']),
+                        'imageList' => $section['content']['images']
+                    ];
+                    break;
+                default:
+                    $section['content']['comments'] = [
+                        'count' => count($section['content']['comments']),
+                        'commentList' => $section['content']['comments']
+                    ];
+                    $section['content']['links'] = [
+                        'count' => count($section['content']['links']),
+                        'linkList' => $section['content']['links']
+                    ];
+                    $section['content']['images'] = [
+                        'count' => count($section['content']['images']),
+                        'imageList' => $section['content']['images']
+                    ];
+                    break;
+            }
+            $contentResponse[] = $section;
+        }
+
+        sendResponse(200, null, $contentResponse);
+    } catch (Exception $e) {
+        sendResponse(500, 'There was an error.', ["errorMessage" => $e->getMessage()]);
+    }
+    $db = null;
+} else {
+    unauthorizedResponse('Please sign in.');
+}

@@ -1,5 +1,7 @@
 import axios from 'axios';
+
 import {API_ROUTE_CONST, apiURL, ROUTE_CONST} from '../constants.js';
+
 import {urlBuilder} from './utils.js';
 
 // ----- Pages -----
@@ -23,12 +25,17 @@ export const getAdminPageContent = async bearerToken =>
         });
 
 // Questionnaire
+export const submitQuestionsForm = async (postBody, pageName) => axios.post(
+    urlBuilder(apiURL, `/${API_ROUTE_CONST.SEND_QUESTIONS}`),
+    {...postBody, pageName}
+);
+
 export const getQuestionnaireQuestionsByPageName = async pageName =>
     axios.get(urlBuilder(apiURL, `/${API_ROUTE_CONST.QUESTIONNAIRE}`, [pageName]));
 
-export const updateQuestionnaireQuestion = async (sectionName, questionName, pageName, requestBody, bearerToken) =>
-    axios.patch(urlBuilder(apiURL, `/${API_ROUTE_CONST.UPDATE_QUESTION}`, [sectionName, questionName, pageName]),
-        requestBody,
+export const updateQuestionnaireQuestion = async (requestBody, bearerToken) =>
+    axios.post(urlBuilder(apiURL, `/${API_ROUTE_CONST.UPDATE_QUESTION}`),
+        {...requestBody},
         {
             headers: {
                 Authorization: `Bearer ${bearerToken}`
@@ -131,12 +138,12 @@ export const getUsers = async bearerToken => axios.get(
         }
     });
 
-export const updateUser = async (firstName, lastName, userName, email, bearerToken) => axios.patch(
+export const updateUser = async (firstName, lastName, userName, email, newUsername, bearerToken) => axios.patch(
     urlBuilder(apiURL, `/${API_ROUTE_CONST.UPDATE_USER}`, [userName]),
     {
         first_name: firstName,
         last_name: lastName,
-        user_name: userName,
+        user_name: newUsername,
         email
     },
     {
@@ -219,7 +226,7 @@ export const getPageImages = async () => axios.get(
     urlBuilder(apiURL, `/${API_ROUTE_CONST.PAGE_IMAGES}`)
 );
 
-export const createImage = async (imageName, alt, tagline, uploadedFile, sectionName, bearerToken) => {
+export const createImage = async (imageName, alt, tagline, imageSource = '', uploadedFile, sectionName, bearerToken) => {
     const fd = new FormData();
     fd.append('imageFile', uploadedFile);
     const imageAsFormData = fd.get('imageFile');
@@ -233,7 +240,8 @@ export const createImage = async (imageName, alt, tagline, uploadedFile, section
                 alt: alt,
                 tagline: tagline,
                 image_file: imageAsFormData,
-                section_name: sectionName
+                section_name: sectionName,
+                image_src: imageSource
             },
             headers: {
                 'content-type': 'multipart/form-data',
@@ -243,11 +251,12 @@ export const createImage = async (imageName, alt, tagline, uploadedFile, section
     );
 };
 
-export const updateImage = async (imageName, src, alt, tagline, uploadedFile, bearerToken) => {
+export const updateImage = async (id, imageName, src, alt, tagline, uploadedFile, bearerToken) => {
     if (!uploadedFile) {
         return axios.post(
             urlBuilder(apiURL, `/${API_ROUTE_CONST.UPDATE_IMAGE}`),
             {
+                id,
                 image_name: imageName,
                 src,
                 alt,
@@ -270,6 +279,7 @@ export const updateImage = async (imageName, src, alt, tagline, uploadedFile, be
                 method: 'post',
                 url: urlBuilder(apiURL, `/${API_ROUTE_CONST.UPDATE_IMAGE}`),
                 data: {
+                    id: id,
                     image_name: imageName,
                     src: src,
                     alt: alt,
@@ -285,10 +295,10 @@ export const updateImage = async (imageName, src, alt, tagline, uploadedFile, be
     }
 }
 
-export const removeImage = async (imageName, bearerToken) => axios.post(
+export const removeImage = async (imageId, bearerToken) => axios.post(
     urlBuilder(apiURL, `/${API_ROUTE_CONST.REMOVE_IMAGE}`),
     {
-        image_name: imageName
+        image_id: imageId
     },
     {
         headers: {

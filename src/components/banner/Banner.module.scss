@@ -1,10 +1,13 @@
-@import "../../scss/main.scss";
+@import "../../scss/main";
 
 .banner {
   @include centerSection;
-  min-width: 100%;
+
+  min-width: 100vw;
   overflow: hidden;
   position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
 
   &:hover .banner__backing {
     transform: scale(1.2);

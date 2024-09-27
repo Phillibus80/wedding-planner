@@ -1,9 +1,12 @@
-import styles from './Footer.module.scss';
-import {ROUTE_CONST} from "../../constants.js";
+import PropTypes from "prop-types";
+import {Col, Container, Image, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+
+import {ROUTE_CONST} from "../../constants.js";
 import {generateFooterNavLinks} from "../../utils/utils.jsx";
 import SocialMedia from "../socialMedia/SocialMedia.jsx";
-import PropTypes from "prop-types";
+
+import styles from './Footer.module.scss';
 
 
 const Footer = ({responseObj}) => {
@@ -27,75 +30,94 @@ const Footer = ({responseObj}) => {
     ];
 
     const logo = footerImages.find(({alt}) => alt === 'risen rose logo');
+    const navElements = generateFooterNavLinks(routeArray, 'menuLink');
 
     return (
         <footer className={styles.footer}>
-            <div className={styles.footer_wrapper}>
-                <div className={styles.logo}>
+            <Container>
+                <Row className={styles.logo}>
                     <Link to={ROUTE_CONST.HOME}>
-                        <img className={styles.logo_image}
-                             src={`/api/${logo?.src}`}
-                             alt={'Risen Role Creations Logo'}
+                        <Image className={styles.logo_image}
+                               src={`/api/${logo?.src}`}
+                               alt={'Risen Role Creations Logo'}
+                               fluid
                         />
                     </Link>
-                </div>
+                </Row>
 
-                <ul className={styles.footerNav}>
+                <Row className={styles.footerNav}>
                     {
-                        generateFooterNavLinks(routeArray, 'menu-link')
+                        navElements.map((route, index) => (
+                            <Col key={`${route}_${index}`}>
+                                {route}
+                            </Col>
+                        ))
                     }
-                </ul>
-            </div>
+                </Row>
+            </Container>
 
             <SocialMedia socialMediaResponseObj={socialMedia}/>
 
-            <div className={styles.footerBackground}>
-                <img
-                    src={'../../../api/img/Decor-outline.png'}
+            <Container className={styles.footerBackground}>
+                <Image
+                    src={'../../../api/img/Decor-outline.webp'}
                     alt='background image'
                     role='presentation'
                     aria-hidden
                     className={styles.footerBackgroundFlourish_1}
+                    fluid
                 />
-                <img
-                    src={'../../../api/img/Decor_3.png'}
+                <Image
+                    src={'../../../api/img/Decor_3.webp'}
                     alt='background image'
                     role='presentation'
                     aria-hidden
                     className={styles.footerBackgroundFlourish_3}
+                    fluid
                 />
-                <img
-                    src={'../../../api/img/Decor-outline.png'}
+                <Image
+                    src={'../../../api/img/Decor-outline.webp'}
                     alt='background image'
                     role='presentation'
                     aria-hidden
                     className={styles.footerBackgroundFlourish_2}
+                    fluid
                 />
-            </div>
+            </Container>
         </footer>
     )
 };
 
 Footer.propTypes = {
-    sectionName: PropTypes.string,
-    pageName: PropTypes.string,
-    showSection: PropTypes.bool,
-    title: PropTypes.string,
-    subTitle: PropTypes.string,
-    content: PropTypes.shape({
-        textContent: PropTypes.string,
-        comments: PropTypes.shape({
-            count: PropTypes.number,
-            commentList: PropTypes.array
+    responseObj: PropTypes.shape({
+        sectionName: PropTypes.string,
+        pageName: PropTypes.string,
+        showSection: PropTypes.bool,
+        title: PropTypes.string,
+        subTitle: PropTypes.string,
+        content: PropTypes.shape({
+            textContent: PropTypes.string,
+            comments: PropTypes.shape({
+                count: PropTypes.number,
+                commentList: PropTypes.array
+            }),
+            links: PropTypes.shape({
+                count: PropTypes.number,
+                linkList: PropTypes.array
+            }),
+            images: PropTypes.shape({
+                count: PropTypes.number,
+                imageList: PropTypes.array
+            })
         }),
-        links: PropTypes.shape({
-            count: PropTypes.number,
-            linkList: PropTypes.array
+        footer: PropTypes.shape({
+            content: PropTypes.shape({
+                images: PropTypes.shape({
+                    imageList: PropTypes.array
+                })
+            })
         }),
-        images: PropTypes.shape({
-            count: PropTypes.number,
-            imageList: PropTypes.array
-        })
+        socialMedia: PropTypes.object
     })
 }
 

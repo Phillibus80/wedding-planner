@@ -1,25 +1,34 @@
 <?php
-$db = Flight::db();
-$data = $db->query("SELECT * FROM COMMENTS");
-$comment_response = $data->fetchAll(PDO::FETCH_ASSOC);
-$getCommentResponse = array();
 
-foreach ($comment_response as $row) {
-    $getCommentResponse[] = array(
-        "id" => $row["ID"],
-        "author" => $row['AUTHOR'],
-        "comment" => $row['COMMENT'],
-        "sectionName" => $row['SECTION_NAME']
-    );
+function fetchComments($db)
+{
+    $statement = $db->query("SELECT ID, AUTHOR, COMMENT, SECTION_NAME FROM COMMENTS");
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-Flight::response()->header("type", "application/json");
-Flight::response()->status(200);
-echo Flight::json(array(
-        'status' => 200,
-        'count' => count($getCommentResponse),
-        'data' => $getCommentResponse
-    )
-);
+function buildCommentResponse($comments): array
+{
+    $commentResponse = [];
+    foreach ($comments as $row) {
+        $commentResponse[] = [
+            "id" => $row["ID"],
+            "author" => $row['AUTHOR'],
+            "comment" => $row['COMMENT'],
+            "sectionName" => $row['SECTION_NAME']
+        ];
+    }
+    return $commentResponse;
+}
+
+try {
+    $db = Flight::db();
+    $comments = fetchComments($db);
+    $commentResponse = buildCommentResponse($comments);
+    sendResponse(200, null, [
+        "count" => count($commentResponse),
+        "commentList" => $commentResponse
+    ]);
+} catch (Exception $e) {
+    sendResponse(500, 'There was an error.', ["errorMessage" => $e->getMessage()]);
+}
 $db = null;
-die();

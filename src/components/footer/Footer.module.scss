@@ -6,46 +6,36 @@
   padding-bottom: 5rem;
   background-color: rgba(darken($color-background-tertiary, 3%), .95);
 
-  &_wrapper {
-    @include centerSection;
-    z-index: 10;
+  @media only screen and (width <= 62.5em) {
+    padding-bottom: 2rem;
+  }
 
-    .logo {
-      padding-top: 7.8125rem;
+  .logo {
+    padding-top: 2rem;
 
-      &_image {
-        position: relative;
-        z-index: 15;
-        max-height: 5.125rem;
-      }
-    }
-
-    .footerNav {
+    &_image {
       position: relative;
       z-index: 15;
+      max-height: 5.125rem;
+    }
+
+    @media only screen and (width <= 62.5em) {
+      margin: 1.5rem;
+    }
+  }
+
+  .footerNav {
+    z-index: 15;
+
+    @media only screen and (width <= 62.5em) {
       display: flex;
-      justify-content: center;
-      gap: 2.5rem;
+      flex-direction: column;
+    }
 
-      @include respond(iphoneSE) {
-        flex-direction: column;
-      }
-
-      & > li {
-        list-style-type: none;
-        display: flex;
-        gap: 2.5rem;
-
-        & > a {
-          text-decoration: none;
-          color: $color-quadiary;
-          font-family: "Segoe UI", sans-serif;
-
-          @include respond(iphoneSE) {
-            margin: 0 auto;
-          }
-        }
-      }
+    a {
+      text-decoration: none;
+      color: $color-quadiary;
+      font-family: "Segoe UI", sans-serif;
     }
   }
 
@@ -62,9 +52,13 @@
     align-items: center;
 
     &Flourish_1 {
-      opacity: 25%;
+      opacity: 0.25;
       transform: rotate(180deg);
       max-height: 31.25rem;
+
+      @media only screen and (width <= 62.5em) {
+        opacity: 0;
+      }
 
       @include respond(iphoneSE-land) {
         max-height: 15.625rem;
@@ -72,8 +66,12 @@
     }
 
     &Flourish_2 {
-      opacity: 25%;
+      opacity: 0.25;
       max-height: 31.25rem;
+
+      @media only screen and (width <= 62.5em) {
+        opacity: 0;
+      }
 
       @include respond(iphoneSE-land) {
         max-height: 15.625rem;
@@ -81,8 +79,12 @@
     }
 
     &Flourish_3 {
-      opacity: 25%;
+      opacity: 0.25;
       max-height: 31.25rem;
+
+      @media only screen and (width <= 62.5em) {
+        opacity: 0;
+      }
 
       @include respond(iphoneSE-land) {
         max-height: 15.625rem;

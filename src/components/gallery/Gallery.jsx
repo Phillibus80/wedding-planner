@@ -1,8 +1,11 @@
-import styles from './Gallery.module.scss';
-import {ROUTE_CONST} from "../../constants.js";
-import SectionHeader from "../sectionHeader/SectionHeader.jsx";
 import PropTypes from "prop-types";
 import {Fade} from "react-awesome-reveal";
+import {Image, Row} from "react-bootstrap";
+
+import {ROUTE_CONST} from "../../constants.js";
+import SectionHeader from "../sectionHeader/SectionHeader.jsx";
+
+import styles from './Gallery.module.scss';
 
 const Gallery = ({responseObj}) => {
     const {
@@ -27,24 +30,22 @@ const Gallery = ({responseObj}) => {
         <div
             key={elemSrc}
         >
-            <img className={`grid-item grid-item-${n + 1}`}
-                 src={`${ROUTE_CONST.API}${elemSrc}`}
-                 alt={alt}
-                 loading="lazy"
+            <Image className={`grid-item grid-item-${n + 1}`}
+                   src={`${ROUTE_CONST.API}${elemSrc}`}
+                   alt={alt}
+                   fluid
             />
             <p>{tagline}</p>
         </div>
     );
 
     return (
-        <section className={styles.gallery}>
-            <div className={styles.gallery_wrapper}>
-                <div className={styles.gallery_wrapper_header}>
-                    <SectionHeader
-                        sectionHeader={galleryHeader}
-                        subTitle={gallerySubTitle}
-                    />
-                </div>
+        <>
+            <Row className={styles.gallery}>
+                <SectionHeader
+                    sectionHeader={galleryHeader}
+                    subTitle={gallerySubTitle}
+                />
 
                 <div className={styles.grid_container}>
                     <div className={styles.column1}>
@@ -74,8 +75,8 @@ const Gallery = ({responseObj}) => {
                         </Fade>
                     </div>
                 </div>
-            </div>
-        </section>
+            </Row>
+        </>
     );
 };
 

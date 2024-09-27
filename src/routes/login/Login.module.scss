@@ -1,22 +1,34 @@
 @import "../../scss/main";
+@include formikCustomFields;
 
+// Component CSS
 .login {
-  @include centerSection;
-
-  & > h1 {
-    margin: 4.5rem 0;
+  h1 {
+    margin: 4.5rem 0 2rem;
     text-align: center;
-    font-family: Marcellus, Segoe UI, sans-serif;
+    font-family: Marcellus, "Segoe UI", sans-serif;
   }
 
   &_form {
-    @include formBaseStyle;
+    padding: 3.5rem;
+    background-color: $color-grey-light-1;
+    border-radius: .75rem;
+
+    .container {
+      @include respond(phone) {
+        border-radius: 0;
+      }
+
+      &_section {
+        margin-bottom: 4rem;
+      }
+
+      .error_message {
+        color: red !important;
+      }
+    }
 
     &_button_container {
-      display: flex;
-      width: 100% !important;
-      justify-content: flex-end;
-
       &_button {
         @include formButton;
       }

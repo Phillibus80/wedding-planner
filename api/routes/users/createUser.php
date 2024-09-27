@@ -1,15 +1,18 @@
 <?php
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
+// There is a toggle for IN_DEVELOPMENT = true
+// - updates the headers
+// - ignores the bearer token
+// - allows to simply create a new user
+// For IN_DEVELOPMENT = false
+// - all above will be set to false
 if (Flight::get('IN_DEVELOPMENT')) {
     $requestHeaders = apache_request_headers();
     $authHeader = $requestHeaders['Authorization'] ?? null;
 } else {
     $authHeader = $_SERVER["REDIRECT_HTTP_AUTHORIZATION"] ?? null;
 }
-$token = isset($authHeader) ? str_replace('Bearer ', '', $authHeader) : null;
+$token = isset($authHeader) ? str_replace('Bearer ', '', $authHeader) : '';
 $secret = Flight::get('secretKey');
 
 // Missing required fields
@@ -25,29 +28,20 @@ if (
     || (!isset(Flight::request()->data->password)
         || Flight::request()->data->password == "")
 ) {
-    Flight::response()->header("Content-Type", "application/json");
-    Flight::response()->status(400);
-    Flight::response()->write(json_encode(array(
-        'status' => 400,
-        'message' => 'All fields are required: first_name, last_name, user_name, email, and password.'
-    )));
-    Flight::response()->send();
+    sendResponse(400, 'All fields are required: first_name, last_name, user_name, email, and password.');
+} // Not signed in or wrong permissions
+
+if (!isset($token) && !Flight::get('IN_DEVELOPMENT')) {
+    unauthorizedResponse('Please sign in.');
 }
 
-// Not signed in or wrong permissions
-elseif (!isset($token) && !Flight::get('IN_DEVELOPMENT')) {
-    Flight::response()->header("Content-Type", "application/json");
-    Flight::response()->status(401);
-    Flight::response()->write(json_encode(array(
-        'status' => 401,
-        'message' => 'You are not authorized to view this content.'
-    )));
-    Flight::response()->send();
-}
+$decodedToken = validateToken($token, $secret);
 
 // Add the user
-else {
-    if (Flight::get('IN_DEVELOPMENT')) {
+// IN_DEVELOPMENT will allow the user to create another user
+// without checking permissions
+if (($decodedToken && !Flight::get('IN_DEVELOPMENT')) || Flight::get('IN_DEVELOPMENT')) {
+    try {
         $db = Flight::db();
         $temp_password = password_hash(Flight::request()->data->password, PASSWORD_BCRYPT);
         $statement = $db->prepare('
@@ -62,66 +56,12 @@ else {
             $temp_password
         ]);
 
-        Flight::response()->header("Content-Type", "application/json");
-        Flight::response()->status(200);
-        Flight::response()->write(json_encode(array(
-            "status" => 200,
-            "message" => 'User added.'
-        )));
-    } else {
-
-        try {
-            // Verify the JWT
-            $decodedToken = JWT::decode($token, new Key(Flight::get('secretKey'), 'HS256'));
-            if (isset($decodedToken->exp) && ($decodedToken->exp > time())) {
-                if (isset($decodedToken->user->username) && isset($decodedToken->user->signedIn) && $decodedToken->user->signedIn) {
-                    $db = Flight::db();
-                    $temp_password = password_hash(Flight::request()->data->password, PASSWORD_BCRYPT);
-                    $statement = $db->prepare('
-                        INSERT INTO USERS (F_NAME, L_NAME, USERNAME, EMAIL, PASSWORD) 
-                        VALUES (?, ?, ?, ?, ?)
-                        ');
-                    $statement->execute([
-                        Flight::request()->data->first_name,
-                        Flight::request()->data->last_name,
-                        Flight::request()->data->user_name,
-                        Flight::request()->data->email,
-                        $temp_password
-                    ]);
-
-                    Flight::response()->header("Content-Type", "application/json");
-                    Flight::response()->status(200);
-                    Flight::response()->write(json_encode(array(
-                        "status" => 200,
-                        "message" => 'User added.'
-                    )));
-                } else {
-                    Flight::response()->header("Content-Type", "application/json");
-                    Flight::response()->status(401);
-                    Flight::response()->write(json_encode(array(
-                            "message" => "Please sign in."
-                        )
-                    ));
-                }
-            } else {
-                Flight::response()->header("Content-Type", "application/json");
-                Flight::response()->status(401);
-                Flight::response()->write(json_encode(array(
-                        "message" => "Your session expired. Please sign back in."
-                    )
-                ));
-            }
-            Flight::response()->send();
-        } catch (Exception $e) {
-            Flight::response()->header("Content-Type", "application/json");
-            Flight::response()->status(401);
-            Flight::response()->write(json_encode(array(
-                    "message" => "Please sign in."
-                )
-            ));
-            Flight::response()->send();
-        }
+        sendResponse(200, 'User added.');
+    } catch (Exception $e) {
+        sendResponse(500, 'There was an error.', ["errorMessage" => $e->getMessage()]);
     }
+
     $db = null;
+} else {
+    unauthorizedResponse('Please sign in.');
 }
-die();

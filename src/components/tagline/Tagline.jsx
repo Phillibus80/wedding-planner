@@ -1,33 +1,16 @@
-import styles from './Tagline.module.scss';
 import PropTypes from "prop-types";
+import {Container, Row} from "react-bootstrap";
+
+import styles from './Tagline.module.scss';
 
 
-const Tagline = ({responseObj}) => {
-    const formatTitle = titleString => {
-
-
-    }
-
-    return (
-        <section className={styles.tagline}>
-            <img src={'../../../api/img/Decor.png'}
-                 alt='background image'
-                 role='presentation'
-                 aria-hidden
-                 className={styles.backgroundFlourish_1}
-            />
-            <img src={'../../../api/img/Decor_2.png'}
-                 alt='background image'
-                 role='presentation'
-                 aria-hidden
-                 className={styles.backgroundFlourish_2}
-            />
-            <div className={styles.tagline_wrapper}>
-                <p className={styles.tagline_wrapper_text}>{responseObj.title}</p>
-            </div>
-        </section>
-    );
-};
+const Tagline = ({responseObj}) => (
+    <Container className={styles.tagline}>
+        <Row className={styles.tagline_wrapper}>
+            <p className={styles.tagline_wrapper_text}>{responseObj.title}</p>
+        </Row>
+    </Container>
+);
 
 Tagline.propTypes = {
     responseObj: PropTypes.shape({

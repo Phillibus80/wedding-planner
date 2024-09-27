@@ -4,14 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit90b7b81aa09574c2c87e3b4484372c71
+class ComposerStaticInita3b24a4147ec59ec28075aa39f480402
 {
     public static $files = array (
-        'fc73bab8d04e21bcdda37ca319c63800' => __DIR__ . '/..' . '/mikecao/flight/flight/autoload.php',
-        '5b7d984aab5ae919d3362ad9588977eb' => __DIR__ . '/..' . '/mikecao/flight/flight/Flight.php',
+        '4cdafd4a5191caf078235e7dd119fdaf' => __DIR__ . '/..' . '/flightphp/core/flight/autoload.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
@@ -19,6 +22,10 @@ class ComposerStaticInit90b7b81aa09574c2c87e3b4484372c71
     );
 
     public static $prefixDirsPsr4 = array (
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
@@ -32,9 +39,9 @@ class ComposerStaticInit90b7b81aa09574c2c87e3b4484372c71
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit90b7b81aa09574c2c87e3b4484372c71::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit90b7b81aa09574c2c87e3b4484372c71::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit90b7b81aa09574c2c87e3b4484372c71::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita3b24a4147ec59ec28075aa39f480402::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita3b24a4147ec59ec28075aa39f480402::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita3b24a4147ec59ec28075aa39f480402::$classMap;
 
         }, null, ClassLoader::class);
     }

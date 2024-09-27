@@ -1,0 +1,13 @@
+@import '../../../../scss/main';
+
+.AdminSection {
+  &_header {
+    font-family: Marcellus, "Segoe UI", sans-serif;
+    margin-bottom: 2.5rem;
+    font-size: 2rem;
+  }
+
+  .button_wrapper {
+    @include adminPlusAddButton;
+  }
+}

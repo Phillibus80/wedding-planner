@@ -1,3 +1,5 @@
+/* eslint react/prop-types: 0 */
+
 import {createContext, useState} from "react";
 
 export const AdminSectionContext = createContext({});

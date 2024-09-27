@@ -2,90 +2,47 @@
 
 use Firebase\JWT\JWT;
 
+function getUserData($db, $username)
+{
+    $stmt = $db->prepare('SELECT USERNAME, PASSWORD, PERMISSION_LEVEL FROM USERS WHERE USERNAME = ?');
+    $stmt->execute([$username]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 $http_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (Flight::get('IN_DEVELOPMENT')) {
-    if ($http_origin == "http://127.0.0.1:5173" || $http_origin == "http://localhost:5173") {
-        header("Access-Control-Allow-Origin: $http_origin");
-    }
-} else {
-    header("Access-Control-Allow-Origin: https://www.thecatladypetsitting.com");
-}
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Headers: X-Requested-With, Origin, Content-Type, X-CSRF-Token, Accept');
+setCorsHeaders($http_origin);
 
-if (
-    (!isset(Flight::request()->data->username)
-        || Flight::request()->data->username == "")
-    || (!isset(Flight::request()->data->password)
-        || Flight::request()->data->password == ""
-    )
-) {
-    Flight::response()->header("Content-Type", "application/json");
-    Flight::response()->status(401);
-    Flight::response()->write(json_encode(array(
-            'message' => 'Username and/or Password field(s) are required.'
-        )
-    ));
-    Flight::response()->send();
-} else {
+handlePreFlight();
+
+$username = Flight::request()->data->username ?? '';
+$password = Flight::request()->data->password ?? '';
+
+if (empty($username) || empty($password)) {
+    unauthorizedResponse('Username and/or Password field(s) are required.');
+}
+
+try {
     $db = Flight::db();
+    $userData = getUserData($db, $username);
 
-    // Search for the user
-    $statement = $db->prepare('SELECT USERNAME, PASSWORD, PERMISSION_LEVEL
-          FROM USERS
-          WHERE USERNAME = ?'
-    );
-    $statement->execute([Flight::request()->data->username]);
-    $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
-    $statementCount = $statement->rowCount();
+    if ($userData && password_verify($password, $userData['PASSWORD'])) {
+        $user = [
+            'signedIn' => true,
+            'username' => $userData['USERNAME'],
+            'permLevel' => $userData['PERMISSION_LEVEL']
+        ];
 
-    // If there is a user
-    if ($statementCount > 0) {
+        $payload = [
+            'user' => $user,
+            'exp' => time() + (60 * 45), // Token expiration time (45 min from now)
+        ];
 
-        // Check the password
-        if (password_verify(Flight::request()->data->password, $statementResult['PASSWORD'])) {
-            // Set the JWT
-            $user = [
-                'signedIn' => true,
-                'username' => $statementResult['USERNAME'],
-                'permLevel' => $statementResult['PERMISSION_LEVEL']
-            ];
-
-            $payload = [
-                'user' => $user,
-                'exp' => time() + (60 * 45), // Token expiration time (45 min from now)
-            ];
-
-            // Generate the JWT
-            $jwt = JWT::encode($payload, Flight::get('secretKey'), 'HS256');
-
-            Flight::response()->header("Content-Type", "application/json");
-            Flight::response()->status(200);
-            Flight::response()->write(json_encode(array(
-                "status" => 200,
-                "token" => $jwt,
-                "message" => 'Signed In ' . $statementResult['USERNAME']
-            )));
-            Flight::response()->send();
-            $db = null;
-        } else {
-            Flight::response()->header("Content-Type", "application/json");
-            Flight::response()->status(401);
-            Flight::response()->write(json_encode(array(
-                    "message" => "Username and Password combination do not match."
-                )
-            ));
-            Flight::response()->send();
-        }
+        $jwt = JWT::encode($payload, Flight::get('secretKey'), 'HS256');
+        sendResponse(200, 'Signed In', ["token" => $jwt, "status" => 200, "username" => $userData['USERNAME']]);
     } else {
-        Flight::response()->header("Content-Type", "application/json");
-        Flight::response()->status(401);
-        Flight::response()->write(json_encode(array(
-                "message" => "Username and Password combination do not match."
-            )
-        ));
-        Flight::response()->send();
+        unauthorizedResponse('Username and Password combination do not match.');
     }
+} catch (Exception $e) {
+    sendResponse(500, 'There was an error.', ["errorMessage" => $e->getMessage()]);
 }
-die();
+$db = null;

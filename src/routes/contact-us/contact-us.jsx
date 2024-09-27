@@ -1,23 +1,19 @@
-import React, {useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from 'formik';
-import * as Yup from 'yup';
-import styles from './contact-us.module.scss';
-import LoadingSpinner from '../../components/loadingSpinner/LoadingSpinner.jsx';
-import {createPortal} from "react-dom";
-import ErrorModal from "../../components/modals/error/ErrorModal.jsx";
-import InfoModal from "../../components/modals/info/InfoModal.jsx";
-import {useSendEmailMutation} from "../../hooks/api-hooks.js";
+import {useContext} from 'react';
+import {Col, Container, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import * as Yup from 'yup';
+
+import LoadingSpinner from '../../components/loadingSpinner/LoadingSpinner.jsx';
+import CustomToast from "../../components/toast/CustomToast.jsx";
+import {AdminSectionContext} from "../../context/adminSectionContext/AdminSectionContext.jsx";
+import {useSendEmailMutation} from "../../hooks/api-hooks.js";
+
+import styles from './contact-us.module.scss';
+
 
 const ContactUs = () => {
-    const [errors, setErrors] = useState({
-        hasErrors: false,
-        errorMessage: ''
-    });
-    const [info, setInfo] = useState({
-        hasInfo: false,
-        infoMessage: ''
-    });
+    const {setErrors, setInfo} = useContext(AdminSectionContext);
 
     const sendEmail = useSendEmailMutation(setErrors, setInfo);
     const navigate = useNavigate();
@@ -41,45 +37,16 @@ const ContactUs = () => {
             .required('Please let us know how we can help.')
     });
 
-    const errorModal = (
-        createPortal(<ErrorModal
-                message={errors.errorMessage}
-                onClose={() => {
-                    setErrors({
-                        hasErrors: false,
-                        errorMessage: ''
-                    });
-                    navigate('/');
-                }}
-            />,
-            document.body
-        )
-    );
-
-    const infoModal = (
-        createPortal(<InfoModal
-                message={info.infoMessage}
-                onClose={() => {
-                    setInfo({
-                        hasInfo: false,
-                        infoMessage: ''
-                    });
-                    navigate('/');
-                }}
-            />,
-            document.body
-        )
-    );
-
     return (
         <>
-            {errors.hasErrors && errorModal}
-            {info.hasInfo && infoModal}
+            <CustomToast
+                errorCallBack={() => navigate('/')}
+                infoCallBack={() => navigate('/')}
+            />
 
-            <div className={styles.contact_us}>
-                <h1>
-                    Contact Us
-                </h1>
+            <Container className={styles.contact_us}>
+                <h1>Contact Us</h1>
+
                 <Formik
                     initialValues={initValues}
                     onSubmit={e => sendEmail.mutate(e)}
@@ -87,95 +54,114 @@ const ContactUs = () => {
                 >
                     {({isSubmitting, isValid}) => (
                         <Form className={styles.contact_form}>
-                            <div className={styles.container}>
-                                <div className={styles.field_container}>
-                                    <label
-                                        htmlFor='client_name'
-                                        id='client_name'
-                                    >
+                            <Row className={styles.contact_form_row}>
+                                <Col
+                                    className='gap-0'
+                                    sm={12}
+                                    md={6}
+                                >
+                                    <label htmlFor='client_name' id='client_name'>
                                         Name:
                                     </label>
-                                    <Field
-                                        type='input'
-                                        name='client_name'
-                                        placholder='Your name'
-                                        className={styles.input_field}
-                                        aria-labelledby='client_name'
-                                    />
-                                    <ErrorMessage
-                                        name='client_name'
-                                        className={styles.error_message}
-                                        component='div'
-                                    />
-                                </div>
 
-                                <div className={styles.field_container}>
+                                    <Row className={styles.questions_form_section}>
+                                        <Field
+                                            type='input'
+                                            name='client_name'
+                                            placholder='Your name'
+                                            className={styles.questions_form_section_input}
+                                            aria-labelledby='client_name'
+                                        />
+                                        <ErrorMessage
+                                            name='client_name'
+                                            className={styles.error_message}
+                                            component='div'
+                                        />
+                                    </Row>
+                                </Col>
+
+                                <Col
+                                    className='gap-0'
+                                    sm={12}
+                                    md={6}
+                                >
                                     <label
                                         htmlFor='email'
                                         id='email'
                                     >
                                         Email:
                                     </label>
+
+                                    <Row className={styles.questions_form_section}>
+                                        <Field
+                                            type='email'
+                                            name='email'
+                                            placeholder='somewhere@someplace.com'
+                                            className={styles.questions_form_section_input}
+                                            aria-labelledby='email'
+                                        />
+                                        <ErrorMessage
+                                            className={styles.error_message}
+                                            name='email'
+                                            component='div'
+                                        />
+                                    </Row>
+                                </Col>
+                            </Row>
+
+                            <Row className={styles.contact_form_row}>
+                                <Col sm={12}
+                                     md={12}
+                                     className='gap-0'
+                                >
                                     <Field
-                                        type='email'
-                                        name='email'
-                                        placeholder='somewhere@someplace.com'
-                                        className={styles.input_field}
-                                        aria-labelledby='email'
+                                        as='textarea'
+                                        name='client_message'
+                                        placeholder='What can we do for you? Let us know.'
+                                        className={styles.questions_form_section_textarea}
+                                        aria-label='Message area used for emailing the cat lady pet sitting service.'
                                     />
                                     <ErrorMessage
                                         className={styles.error_message}
-                                        name='email'
                                         component='div'
+                                        name='client_message'
                                     />
-                                </div>
+                                </Col>
+                            </Row>
 
-                            </div>
-
-                            <div className={styles.textarea_container}>
-                                <Field
-                                    as='textarea'
-                                    name='client_message'
-                                    placeholder='What can we do for you? Let us know.'
-                                    className={styles.textarea_field}
-                                    aria-label='Message area used for emailing the cat lady pet sitting service.'
-                                />
-                                <ErrorMessage
-                                    className={styles.error_message}
-                                    component='div'
-                                    name='client_message'
-                                />
-                            </div>
-
-                            <div className={styles.contact_form_button_container}>
-                                <button
-                                    className={styles.contact_form_button_container_button}
-                                    type='submit'
-                                    disabled={isSubmitting || !isValid}
-                                    aria-label={isSubmitting || !isValid
-                                        ? 'The' +
-                                        ' submit button is currently disabled' +
-                                        ' due to the either the form is' +
-                                        ' submitting or it is invalid.'
-                                        : 'The button to submit your message to the cat' +
-                                        ' lady pet sitting service.'}
-                                >
-                                    <span>Submit</span>
-                                    {
-                                        isSubmitting &&
-                                        <div className={styles.loading_spinner}>
-                                            <LoadingSpinner
-                                                role='presentation'
-                                                aria-label='A loading spinner that is on the screen during the form submission.'
-                                            />
-                                        </div>
-                                    }
-                                </button>
-                            </div>
+                            <Container className={styles.button_container}>
+                                <Row>
+                                    <Col className='gap-0' sm={{span: 6, offset: 3}}>
+                                        <button
+                                            className={styles.button_container_button}
+                                            type='submit'
+                                            disabled={isSubmitting || !isValid}
+                                            aria-label={isSubmitting || !isValid
+                                                ? 'The' +
+                                                ' submit button is currently disabled' +
+                                                ' due to the either the form is' +
+                                                ' submitting or it is invalid.'
+                                                : 'The button to submit your message to the cat' +
+                                                ' lady pet sitting service.'}
+                                        >
+                                            <span>Submit</span>
+                                            {
+                                                isSubmitting &&
+                                                <div className={styles.loading_spinner}>
+                                                    <LoadingSpinner
+                                                        role='presentation'
+                                                        aria-label='A loading spinner that is on the screen during the form submission.'
+                                                    />
+                                                </div>
+                                            }
+                                        </button>
+                                    </Col>
+                                </Row>
+                            </Container>
                         </Form>
                     )}
                 </Formik>
-            </div>
+            </Container>
         </>
     )
 };

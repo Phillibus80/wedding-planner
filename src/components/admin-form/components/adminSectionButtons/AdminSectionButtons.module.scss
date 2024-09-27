@@ -1,0 +1,18 @@
+@import "../../../../scss/main";
+
+
+.button_container {
+  padding: 1.5rem 0;
+
+  &_button {
+    @include cardButton($color-blue);
+  }
+
+  &_button_remove {
+    @include cardButton($color-error);
+  }
+
+  .error_message {
+    color: red !important;
+  }
+}

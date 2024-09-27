@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import {Col, Container, Row} from "react-bootstrap";
+
+import SectionHeader from "../sectionHeader/SectionHeader.jsx";
+
 import styles from './Comments.module.scss';
 import '../../scss/main.scss';
-import SectionHeader from "../sectionHeader/SectionHeader.jsx";
 
 const Comments = ({commentResponseObj}) => {
     const {
@@ -16,37 +18,47 @@ const Comments = ({commentResponseObj}) => {
     } = commentResponseObj;
 
     return (
-        <section className={styles.comments}>
-            <div className={styles.comments_header}>
+        <Container className={styles.comments}>
+            <Row>
                 <SectionHeader
                     sectionHeader={commentTitle}
                     subTitle={commentSubTitle}
                 />
-            </div>
-            <div className={styles.comments_container}>
+            </Row>
+
+            <Row>
                 {
                     commentList.map(
                         ({comment, author}, index) => (
-                            <p key={`comment_${index}`}
-                               className={styles.comments_comment}
+                            <Col
+                                className='gap-0'
+                                sm={12}
+                                lg={{span: 4}}
+                                key={`${comment}_${author}`}
                             >
-                                {`${comment}`}
-                                <br/>
-                                <br/>
-                                {author}
-                            </p>
+
+                                <p key={`comment_${index}`}
+                                   className={styles.comments_comment}
+                                >
+                                    {`${comment}`}
+                                    <br/>
+                                    <br/>
+                                    {author}
+                                </p>
+                            </Col>
                         )
                     )
                 }
-            </div>
-        </section>
-    )
-
+            </Row>
+        </Container>
+    );
 }
 
 
 Comments.propTypes = {
     commentResponseObj: PropTypes.shape({
+        title: PropTypes.string,
+        subTitle: PropTypes.string,
         commentTitle: PropTypes.string,
         commentSubTitle: PropTypes.string,
         content: PropTypes.shape({

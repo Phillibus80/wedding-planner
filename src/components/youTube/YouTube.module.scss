@@ -1,7 +1,8 @@
-@import '../../scss/main.scss';
+@import '../../scss/main';
 
 .youtube {
   @include centerSection;
+
   margin-bottom: 2.5rem;
   max-width: $grid-width !important;
   max-height: 40rem !important;
